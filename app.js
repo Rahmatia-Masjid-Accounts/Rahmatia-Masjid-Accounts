@@ -434,6 +434,25 @@ onAuthStateChanged(auth, async (user) => {
         "এই অ্যাকাউন্টের Admin অনুমতি নেই।",
         true
       );
+       const loginDialog = document.getElementById("loginDialog");
+const closeLoginBtn = document.getElementById("closeLoginBtn");
+const loginError = document.getElementById("loginError");
+
+if (adminLoginBtn && loginDialog) {
+  adminLoginBtn.addEventListener("click", () => {
+    if (typeof loginDialog.showModal === "function") {
+      loginDialog.showModal();
+    } else {
+      loginDialog.setAttribute("open", "");
+    }
+  });
+}
+
+if (closeLoginBtn && loginDialog) {
+  closeLoginBtn.addEventListener("click", () => {
+    loginDialog.close();
+  });
+}
 
       await signOut(auth);
       return;
