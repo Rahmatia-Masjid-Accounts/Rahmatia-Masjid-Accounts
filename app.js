@@ -1,8 +1,7 @@
-/* =====================================================
+/* ==========================================
    Rahmatia Masjid Accounts
-   Firebase Authentication + Firestore
-   GitHub Pages compatible
-   ===================================================== */
+   Firebase + Firestore
+   ========================================== */
 
 import { initializeApp } from
   "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -12,7 +11,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+} from
+  "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 
 import {
   getFirestore,
@@ -23,13 +23,13 @@ import {
   getDoc,
   onSnapshot,
   serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
+} from
+  "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 /* 1. Firebase Configuration */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDw0TCb1NE2CAIrs4FZjuCXLA2VtPDC-YE",
+  apiKey: "AIzaSyDwTC0C3b1NE2CAIrs4FZjuCXLA2VtPDC-YE",
   authDomain: "rahmatia-masjid-accounts.firebaseapp.com",
   projectId: "rahmatia-masjid-accounts",
   storageBucket: "rahmatia-masjid-accounts.firebasestorage.app",
@@ -37,57 +37,11 @@ const firebaseConfig = {
   appId: "1:229600290304:web:79ac7f54da968badc21ae5"
 };
 
-
-/* 2. Initialize Firebase */
-
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-
-/* 3. HTML Elements */
-
-const $ = (id) => document.getElementById(id);
-
-const adminLoginBtn = $("adminLoginBtn");
-const refreshBtn = $("refreshBtn");
-const logoutBtn = $("logoutBtn");
-
-const adminPanel = $("adminPanel");
-const transactionForm = $("transactionForm");
-
-const typeInput = $("type");
-const amountInput = $("amount");
-const personInput = $("person");
-const dateInput = $("date");
-const categoryInput = $("category");
-const descriptionInput = $("description");
-
-const submitBtn = $("submitBtn");
-const statusMessage = $("statusMessage");
-
-const totalIncome = $("totalIncome");
-const totalExpense = $("totalExpense");
-const balanceElement = $("balance");
-const balanceNote = $("balanceNote");
-
-const entryCount = $("entryCount");
-const searchInput = $("searchInput");
-const filterType = $("filterType");
-const transactionList = $("transactionList");
-const actionHeader = $("actionHeader");
-const emptyMessage = $("emptyMessage");
-
-const loginDialog = $("loginDialog");
-const loginForm = $("loginForm");
-const closeLoginBtn = $("closeLoginBtn");
-const loginEmail = $("loginEmail");
-const loginPassword = $("loginPassword");
-const loginError = $("loginError");
-const loginSubmitBtn = $("loginSubmitBtn");
-
-
-/* 4. Application State */
+/* 2. Application State */
 
 let currentUser = null;
 let isAdmin = false;
@@ -95,26 +49,58 @@ let transactions = [];
 let unsubscribeTransactions = null;
 let authCheckVersion = 0;
 
+/* 3. HTML Elements
+   HTML-এ এই ID-গুলো থাকতে হবে।
+*/
 
-/* 5. Helpers */
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
 
-function showStatus(message, isError = false) {
-  if (!statusMessage) return;
+const adminLoginBtn = document.getElementById("adminLoginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const adminPanel = document.getElementById("adminPanel");
 
-  statusMessage.textContent = message;
-  statusMessage.style.color = isError ? "#dc2626" : "#166534";
-}
+const transactionForm =
+  document.getElementById("transactionForm");
 
-function showLoginError(message) {
-  if (loginError) {
-    loginError.textContent = message;
-  }
-}
+const transactionList =
+  document.getElementById("transactionList");
+
+const totalIncomeElement =
+  document.getElementById("totalIncome");
+
+const totalExpenseElement =
+  document.getElementById("totalExpense");
+
+const balanceElement =
+  document.getElementById("balance");
+
+const statusElement =
+  document.getElementById("status");
+
+/* 4. Helper Functions */
 
 function setHidden(element, hidden) {
   if (element) {
-    element.classList.toggle("hidden", hidden);
+    element.hidden = hidden;
   }
+}
+
+function showStatus(message, isError = false) {
+  if (!statusElement) {
+    console.log(message);
+    return;
+  }
+
+  statusElement.textContent = message;
+  statusElement.style.color = isError ? "#c62828" : "#18794e";
+}
+
+function formatMoney(amount) {
+  return Number(amount || 0).toLocaleString("en-BD", {
+    maximumFractionDigits: 2
+  }) + " ৳";
 }
 
 function escapeHTML(value) {
@@ -123,239 +109,90 @@ function escapeHTML(value) {
     "<": "&lt;",
     ">": "&gt;",
     '"': "&quot;",
-    "'": "&#39;"
+    "'": "&#039;"
   })[char]);
 }
 
-function formatMoney(value) {
-  return new Intl.NumberFormat("bn-BD", {
-    style: "currency",
-    currency: "BDT",
-    maximumFractionDigits: 2
-  }).format(Number(value) || 0);
-}
-
-function localToday() {
-  const now = new Date();
-  const offset = now.getTimezoneOffset() * 60000;
-  return new Date(now.getTime() - offset)
-    .toISOString()
-    .slice(0, 10);
-}
-
-function friendlyAuthError(error) {
-  const code = error?.code || "unknown";
-
-  const messages = {
-    "auth/invalid-email":
-      "ইমেইল ঠিকানাটি সঠিক নয়।",
-
-    "auth/invalid-credential":
-      "ইমেইল বা পাসওয়ার্ড সঠিক নয়।",
-
-    "auth/wrong-password":
-      "পাসওয়ার্ড সঠিক নয়।",
-
-    "auth/user-not-found":
-      "এই ইমেইলে Firebase অ্যাকাউন্ট পাওয়া যায়নি।",
-
-    "auth/too-many-requests":
-      "অনেকবার চেষ্টা করা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করো।",
-
-    "auth/network-request-failed":
-      "ইন্টারনেট সংযোগ পরীক্ষা করো।",
-
-    "auth/unauthorized-domain":
-      "Firebase Authentication-এর Authorized domains-এ ওয়েবসাইটের ডোমেইন যোগ করতে হবে।",
-
-    "auth/operation-not-allowed":
-      "Firebase Console-এ Email/Password sign-in চালু করতে হবে.",
-
-    "auth/invalid-api-key":
-      "Firebase API key সঠিক নয়। app.js-এর Config পরীক্ষা করো।",
-
-    "auth/user-disabled":
-      "এই Firebase অ্যাকাউন্টটি নিষ্ক্রিয় করা হয়েছে।"
-  };
-
-  return `${messages[code] || "লগইন ব্যর্থ হয়েছে। নিচের Error Code দেখে সমস্যা শনাক্ত করো।"} (Error: ${code})`;
-}
-
-
-/* 6. Login Dialog */
-
-adminLoginBtn?.addEventListener("click", () => {
-  showLoginError("");
-
-  if (loginDialog?.showModal) {
-    loginDialog.showModal();
-  } else {
-    showStatus("Login dialog পাওয়া যায়নি। index.html পরীক্ষা করো।", true);
-  }
-});
-
-closeLoginBtn?.addEventListener("click", () => {
-  loginDialog?.close();
-});
-
-loginDialog?.addEventListener("click", (event) => {
-  if (event.target === loginDialog) {
-    loginDialog.close();
-  }
-});
-
-
-/* 7. Check Admin Permission */
+/* 5. Check Admin Permission */
 
 async function checkAdminPermission(user) {
   const adminRef = doc(db, "admins", user.uid);
   const adminSnapshot = await getDoc(adminRef);
 
-  return (
-    adminSnapshot.exists() &&
-    adminSnapshot.data()?.role === "admin"
-  );
+  return adminSnapshot.exists() &&
+    adminSnapshot.data().role === "admin";
 }
 
+/* 6. Login */
 
-/* 8. Login */
+if (loginForm) {
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-loginForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
+    const email = emailInput?.value.trim();
+    const password = passwordInput?.value;
 
-  showLoginError("");
-
-  const email = loginEmail?.value.trim();
-  const password = loginPassword?.value;
-
-  if (!email || !password) {
-    showLoginError("ইমেইল ও পাসওয়ার্ড লিখো।");
-    return;
-  }
-
-  if (loginSubmitBtn) {
-    loginSubmitBtn.disabled = true;
-    loginSubmitBtn.textContent = "লগইন হচ্ছে...";
-  }
-
-  try {
-    const credential = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    const allowed = await checkAdminPermission(credential.user);
-
-    if (!allowed) {
-      await signOut(auth);
-
-      showLoginError(
-        "লগইন পরিচয় যাচাই হয়েছে, কিন্তু এই অ্যাকাউন্ট অ্যাডমিন নয়। " +
-        "Firestore-এর admins collection-এ UID ও role পরীক্ষা করো।"
-      );
-
+    if (!email || !password) {
+      showStatus("ইমেইল ও পাসওয়ার্ড লিখো।", true);
       return;
     }
 
-    loginDialog?.close();
-    loginForm.reset();
+    try {
+      showStatus("লগইন যাচাই হচ্ছে...");
 
-    showStatus("অ্যাডমিন হিসেবে লগইন সফল হয়েছে।");
+      const credential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-  } catch (error) {
-    console.error("Firebase login error:", error);
+      const allowed = await checkAdminPermission(credential.user);
 
-    showLoginError(friendlyAuthError(error));
-  } finally {
-    if (loginSubmitBtn) {
-      loginSubmitBtn.disabled = false;
-      loginSubmitBtn.textContent = "লগইন";
-    }
-  }
-});
+      if (!allowed) {
+        await signOut(auth);
+        showStatus(
+          "এই অ্যাকাউন্ট Admin নয়। admins collection-এ UID ও role পরীক্ষা করো।",
+          true
+        );
+        return;
+      }
 
+      showStatus("Admin লগইন সফল।");
+      if (passwordInput) passwordInput.value = "";
 
-/* 9. Logout */
-
-logoutBtn?.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-    showStatus("সফলভাবে লগআউট হয়েছে।");
-  } catch (error) {
-    console.error("Logout error:", error);
-    showStatus("লগআউট ব্যর্থ হয়েছে।", true);
-  }
-});
-
-
-/* 10. Listen for Authentication Changes */
-
-onAuthStateChanged(auth, async (user) => {
-  const version = ++authCheckVersion;
-
-  currentUser = user;
-  isAdmin = false;
-
-  setHidden(adminPanel, true);
-  setHidden(adminLoginBtn, Boolean(user));
-  setHidden(logoutBtn, true);
-
-  if (unsubscribeTransactions) {
-    unsubscribeTransactions();
-    unsubscribeTransactions = null;
-  }
-
-  if (!user) {
-    transactions = [];
-    renderTransactions();
-    renderTotals();
-
-    showStatus("হিসাব দেখতে পারবে। নতুন হিসাব যোগ করতে অ্যাডমিন লগইন করো।");
-    return;
-  }
-
-  try {
-    const allowed = await checkAdminPermission(user);
-
-    if (version !== authCheckVersion) return;
-
-    if (!allowed) {
+    } catch (error) {
+      console.error("Login error:", error);
       showStatus(
-        "এই অ্যাকাউন্টের অ্যাডমিন অনুমতি নেই। admins collection পরীক্ষা করো।",
+        `লগইন ব্যর্থ: ${error.code || error.message}`,
         true
       );
-
-      await signOut(auth);
-      return;
     }
+  });
+}
 
-    isAdmin = true;
+/* 7. Logout */
 
-    setHidden(adminPanel, false);
-    setHidden(adminLoginBtn, true);
-    setHidden(logoutBtn, false);
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      showStatus("লগআউট সফল।");
+    } catch (error) {
+      console.error("Logout error:", error);
+      showStatus("লগআউট করা যায়নি।", true);
+    }
+  });
+}
 
-    showStatus("অ্যাডমিন লগইন সফল।");
-
-    loadTransactions();
-
-  } catch (error) {
-    console.error("Admin verification error:", error);
-
-    showStatus(
-      `অ্যাডমিন যাচাই ব্যর্থ: ${error.code || error.message}`,
-      true
-    );
-  }
-});
-
-
-/* 11. Load Transactions */
+/* 8. Load Public Transactions
+   সবাই হিসাব দেখতে পারবে।
+   Firestore Rules-এ public read অনুমোদিত থাকতে হবে।
+*/
 
 function loadTransactions() {
   if (unsubscribeTransactions) {
     unsubscribeTransactions();
+    unsubscribeTransactions = null;
   }
 
   unsubscribeTransactions = onSnapshot(
@@ -376,17 +213,15 @@ function loadTransactions() {
         }
 
         return (b.createdAt?.seconds || 0) -
-               (a.createdAt?.seconds || 0);
+          (a.createdAt?.seconds || 0);
       });
 
       renderTotals();
       renderTransactions();
-      showStatus("হিসাব আপডেট হয়েছে।");
     },
 
     (error) => {
       console.error("Firestore read error:", error);
-
       showStatus(
         `হিসাব লোড হয়নি: ${error.code || error.message}`,
         true
@@ -395,246 +230,237 @@ function loadTransactions() {
   );
 }
 
-
-/* 12. Calculate Income, Expense and Balance */
+/* 9. Calculate Income, Expense and Balance */
 
 function renderTotals() {
   const income = transactions.reduce((sum, item) => {
-    return item.type === "income"
-      ? sum + (Number(item.amount) || 0)
-      : sum;
+    return sum + (
+      item.type === "income" ? Number(item.amount || 0) : 0
+    );
   }, 0);
 
   const expense = transactions.reduce((sum, item) => {
-    return item.type === "expense"
-      ? sum + (Number(item.amount) || 0)
-      : sum;
+    return sum + (
+      item.type === "expense" ? Number(item.amount || 0) : 0
+    );
   }, 0);
 
   const balance = income - expense;
 
-  if (totalIncome) {
-    totalIncome.textContent = formatMoney(income);
+  if (totalIncomeElement) {
+    totalIncomeElement.textContent = formatMoney(income);
   }
 
-  if (totalExpense) {
-    totalExpense.textContent = formatMoney(expense);
+  if (totalExpenseElement) {
+    totalExpenseElement.textContent = formatMoney(expense);
   }
 
   if (balanceElement) {
     balanceElement.textContent = formatMoney(balance);
   }
-
-  if (balanceNote) {
-    balanceNote.textContent =
-      balance < 0
-        ? "ব্যয়ের পরিমাণ আয়ের চেয়ে বেশি।"
-        : "মোট আয় থেকে মোট ব্যয় বাদ দিয়ে হিসাব করা হয়েছে।";
-  }
 }
 
-
-/* 13. Render Transaction Table */
+/* 10. Display Transaction List */
 
 function renderTransactions() {
   if (!transactionList) return;
 
-  const query = (searchInput?.value || "").trim().toLowerCase();
-  const selectedType = filterType?.value || "all";
-
-  const filtered = transactions.filter((item) => {
-    const matchesType =
-      selectedType === "all" || item.type === selectedType;
-
-    const searchableText = [
-      item.person,
-      item.category,
-      item.description,
-      item.date
-    ].join(" ").toLowerCase();
-
-    return matchesType && searchableText.includes(query);
-  });
-
-  if (entryCount) {
-    entryCount.textContent = `${filtered.length}টি হিসাব`;
-  }
-
-  if (actionHeader) {
-    actionHeader.classList.toggle("hidden", !isAdmin);
-  }
-
-  if (filtered.length === 0) {
-    transactionList.innerHTML = "";
-    setHidden(emptyMessage, false);
+  if (transactions.length === 0) {
+    transactionList.innerHTML =
+      '<p class="empty-message">এখনো কোনো হিসাব যোগ করা হয়নি।</p>';
     return;
   }
 
-  setHidden(emptyMessage, true);
-
-  transactionList.innerHTML = filtered.map((item) => {
+  transactionList.innerHTML = transactions.map((item) => {
     const isIncome = item.type === "income";
+    const typeText = isIncome ? "আয়" : "ব্যয়";
+    const amountClass = isIncome ? "income" : "expense";
+
+    const date = escapeHTML(item.date || "তারিখ নেই");
+    const category = escapeHTML(item.category || typeText);
+    const description = escapeHTML(item.description || "—");
+    const amount = formatMoney(item.amount);
+
+    const deleteButton = isAdmin
+      ? `<button type="button"
+          class="delete-btn"
+          data-delete-id="${escapeHTML(item.id)}">
+          মুছুন
+        </button>`
+      : "";
 
     return `
-      <tr>
-        <td>${escapeHTML(item.date || "—")}</td>
-        <td>${escapeHTML(item.category || "অন্যান্য")}</td>
-        <td>${escapeHTML(item.description || "—")}</td>
-        <td>${escapeHTML(item.person || "—")}</td>
-        <td>
-          <span class="${isIncome ? "income" : "expense"}">
-            ${isIncome ? "আয়" : "ব্যয়"}
-          </span>
-        </td>
-        <td>${formatMoney(item.amount)}</td>
-        ${isAdmin ? `
-          <td>
-            <button
-              type="button"
-              class="delete-transaction"
-              data-id="${escapeHTML(item.id)}"
-              aria-label="হিসাব মুছুন"
-            >মুছুন</button>
-          </td>
-        ` : ""}
-      </tr>
+      <article class="transaction-item">
+        <div class="transaction-details">
+          <strong>${category}</strong>
+          <p>${description}</p>
+          <small>${date}</small>
+        </div>
+
+        <div class="transaction-amount ${amountClass}">
+          <strong>${isIncome ? "+" : "−"}${amount}</strong>
+          <span>${typeText}</span>
+          ${deleteButton}
+        </div>
+      </article>
     `;
   }).join("");
 }
 
+/* 11. Add Transaction — Admin Only */
 
-/* 14. Search and Filter */
+if (transactionForm) {
+  transactionForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-searchInput?.addEventListener("input", renderTransactions);
-filterType?.addEventListener("change", renderTransactions);
+    if (!currentUser || !isAdmin) {
+      showStatus("হিসাব যোগ করতে Admin লগইন প্রয়োজন।", true);
+      return;
+    }
 
-refreshBtn?.addEventListener("click", () => {
-  renderTotals();
-  renderTransactions();
-  showStatus("দেখানো হিসাব রিফ্রেশ হয়েছে।");
-});
+    const formData = new FormData(transactionForm);
 
+    const type = String(formData.get("type") || "");
+    const amount = Number(formData.get("amount"));
+    const date = String(formData.get("date") || "");
+    const category = String(formData.get("category") || "").trim();
+    const description =
+      String(formData.get("description") || "").trim();
 
-/* 15. Add a Transaction */
+    if (!["income", "expense"].includes(type)) {
+      showStatus("হিসাবের ধরন নির্বাচন করো।", true);
+      return;
+    }
 
-if (dateInput && !dateInput.value) {
-  dateInput.value = localToday();
+    if (!Number.isFinite(amount) || amount <= 0) {
+      showStatus("সঠিক টাকার পরিমাণ লিখো।", true);
+      return;
+    }
+
+    if (!date) {
+      showStatus("তারিখ নির্বাচন করো।", true);
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "transactions"), {
+        type,
+        amount,
+        date,
+        category,
+        description,
+        createdAt: serverTimestamp(),
+        createdBy: currentUser.uid
+      });
+
+      transactionForm.reset();
+      showStatus("নতুন হিসাব সফলভাবে যোগ হয়েছে।");
+
+    } catch (error) {
+      console.error("Add transaction error:", error);
+      showStatus(
+        `হিসাব যোগ হয়নি: ${error.code || error.message}`,
+        true
+      );
+    }
+  });
 }
 
-transactionForm?.addEventListener("submit", async (event) => {
-  event.preventDefault();
+/* 12. Delete Transaction — Admin Only */
 
-  if (!currentUser || !isAdmin) {
-    showStatus("হিসাব যোগ করতে আগে অ্যাডমিন লগইন করো।", true);
+if (transactionList) {
+  transactionList.addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-delete-id]");
+    if (!button) return;
+
+    if (!currentUser || !isAdmin) {
+      showStatus("হিসাব মুছতে Admin লগইন প্রয়োজন।", true);
+      return;
+    }
+
+    const transactionId = button.dataset.deleteId;
+    if (!transactionId) return;
+
+    if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) {
+      return;
+    }
+
+    try {
+      await deleteDoc(doc(db, "transactions", transactionId));
+      showStatus("হিসাব মুছে ফেলা হয়েছে।");
+
+    } catch (error) {
+      console.error("Delete transaction error:", error);
+      showStatus(
+        `হিসাব মোছা যায়নি: ${error.code || error.message}`,
+        true
+      );
+    }
+  });
+}
+
+/* 13. Authentication State
+   লগইন ছাড়াও হিসাব লোড হবে।
+*/
+
+onAuthStateChanged(auth, async (user) => {
+  const version = ++authCheckVersion;
+
+  currentUser = user;
+  isAdmin = false;
+
+  setHidden(adminPanel, true);
+  setHidden(adminLoginBtn, Boolean(user));
+  setHidden(logoutBtn, true);
+
+  // আগের Firestore listener বন্ধ করে নতুনটি চালু করা
+  loadTransactions();
+
+  if (!user) {
+    showStatus(
+      "সবার জন্য আয়-ব্যয়ের হিসাব দেখানো হচ্ছে। নতুন হিসাব যোগ করতে Admin লগইন করো।"
+    );
     return;
-  }
-
-  const type = typeInput?.value;
-  const amount = Number(amountInput?.value);
-  const person = personInput?.value.trim();
-  const date = dateInput?.value;
-  const category = categoryInput?.value.trim();
-  const description = descriptionInput?.value.trim();
-
-  if (!["income", "expense"].includes(type)) {
-    showStatus("হিসাবের ধরন নির্বাচন করো।", true);
-    return;
-  }
-
-  if (!Number.isFinite(amount) || amount <= 0) {
-    showStatus("সঠিক টাকার পরিমাণ লিখো।", true);
-    return;
-  }
-
-  if (!date || !person || !category || !description) {
-    showStatus("সব প্রয়োজনীয় তথ্য পূরণ করো।", true);
-    return;
-  }
-
-  if (submitBtn) {
-    submitBtn.disabled = true;
-    submitBtn.textContent = "সংরক্ষণ হচ্ছে...";
   }
 
   try {
-    await addDoc(collection(db, "transactions"), {
-      type,
-      amount,
-      person,
-      date,
-      category,
-      description,
-      createdAt: serverTimestamp(),
-      createdBy: currentUser.uid
-    });
+    const allowed = await checkAdminPermission(user);
 
-    transactionForm.reset();
+    // এর মধ্যে নতুন auth state এলে পুরোনো ফল উপেক্ষা করো
+    if (version !== authCheckVersion) return;
 
-    if (dateInput) {
-      dateInput.value = localToday();
+    if (!allowed) {
+      showStatus(
+        "এই অ্যাকাউন্টের Admin অনুমতি নেই।",
+        true
+      );
+
+      await signOut(auth);
+      return;
     }
 
-    showStatus("হিসাব সফলভাবে সংরক্ষণ হয়েছে।");
+    isAdmin = true;
+
+    setHidden(adminPanel, false);
+    setHidden(adminLoginBtn, true);
+    setHidden(logoutBtn, false);
+
+    renderTransactions();
+    showStatus("Admin লগইন সফল।");
 
   } catch (error) {
-    console.error("Add transaction error:", error);
+    console.error("Admin verification error:", error);
+
+    if (version !== authCheckVersion) return;
 
     showStatus(
-      `হিসাব সংরক্ষণ হয়নি: ${error.code || error.message}`,
+      `Admin যাচাই ব্যর্থ: ${error.code || error.message}`,
       true
     );
-  } finally {
-    if (submitBtn) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "হিসাব সংরক্ষণ";
-    }
   }
 });
 
-
-/* 16. Delete a Transaction */
-
-transactionList?.addEventListener("click", async (event) => {
-  const button = event.target.closest(".delete-transaction");
-
-  if (!button) return;
-
-  if (!currentUser || !isAdmin) {
-    showStatus("হিসাব মুছতে অ্যাডমিন অনুমতি প্রয়োজন।", true);
-    return;
-  }
-
-  const id = button.dataset.id;
-
-  if (!id) return;
-
-  const confirmed = window.confirm(
-    "তুমি কি সত্যিই এই হিসাবটি মুছে ফেলতে চাও?"
-  );
-
-  if (!confirmed) return;
-
-  button.disabled = true;
-
-  try {
-    await deleteDoc(doc(db, "transactions", id));
-
-    showStatus("হিসাব মুছে ফেলা হয়েছে।");
-
-  } catch (error) {
-    console.error("Delete transaction error:", error);
-
-    showStatus(
-      `হিসাব মুছতে ব্যর্থ: ${error.code || error.message}`,
-      true
-    );
-
-    button.disabled = false;
-  }
-});
-
-
-/* 17. Initial Screen */
+/* 14. Initial Display */
 
 renderTotals();
 renderTransactions();
