@@ -449,7 +449,38 @@
 
 
   <!-- JavaScript -->
-  <script type="module" src="app.js?v=3"></script>
+  
+<!-- Admin Login Dialog Fix -->
+<script>
+  const adminButton = document.getElementById("adminLoginBtn");
+  const adminDialog = document.getElementById("loginDialog");
+  const closeButton = document.getElementById("closeLoginBtn");
 
+  if (adminButton && adminDialog) {
+    adminButton.addEventListener("click", function () {
+      if (!adminDialog.open) {
+        if (typeof adminDialog.showModal === "function") {
+          adminDialog.showModal();
+        } else {
+          adminDialog.setAttribute("open", "");
+        }
+      }
+    });
+  }
+
+  if (closeButton && adminDialog) {
+    closeButton.addEventListener("click", function () {
+      if (typeof adminDialog.close === "function") {
+        adminDialog.close();
+      } else {
+        adminDialog.removeAttribute("open");
+      }
+    });
+  }
+</script>
+
+<script type="module" src="app.js?v=4"></script>
+</body>
+</html>
 </body>
 </html>
