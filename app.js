@@ -32,12 +32,12 @@ import {
    ========================================== */
 
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY",
-  authDomain: "PASTE_YOUR_AUTH_DOMAIN",
+  apiKey: "AIzaSyDw0TCb1NE2CAIrs4FZjuCXLA2VtPDC-YE",
+  authDomain: "rahmatia-masjid-accounts.firebaseapp.com",
   projectId: "rahmatia-masjid-accounts",
-  storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
-  messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+  storageBucket: "rahmatia-masjid-accounts.firebasestorage.app",
+  messagingSenderId: "229600290304",
+  appId: "1:229600290304:web:79ac7f54da968badc21ae5"
 };
 
 /* ==========================================
