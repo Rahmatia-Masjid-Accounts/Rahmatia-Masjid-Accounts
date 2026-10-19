@@ -26,6 +26,7 @@ import {
 } from
   "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+
 /* 1. Firebase Configuration */
 
 const firebaseConfig = {
@@ -41,6 +42,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+
 /* 2. Application State */
 
 let currentUser = null;
@@ -49,42 +51,47 @@ let transactions = [];
 let unsubscribeTransactions = null;
 let authCheckVersion = 0;
 
-/* 3. HTML Elements
-   HTML-এ এই ID-গুলো থাকতে হবে।
-*/
+
+/* 3. HTML Elements */
 
 const loginForm = document.getElementById("loginForm");
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+const emailInput = document.getElementById("loginEmail");
+const passwordInput = document.getElementById("loginPassword");
 
 const adminLoginBtn = document.getElementById("adminLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const adminPanel = document.getElementById("adminPanel");
 
-const transactionForm =
-  document.getElementById("transactionForm");
+const loginDialog = document.getElementById("loginDialog");
+const closeLoginBtn = document.getElementById("closeLoginBtn");
+const loginError = document.getElementById("loginError");
+const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 
-const transactionList =
-  document.getElementById("transactionList");
+const transactionForm = document.getElementById("transactionForm");
+const transactionList = document.getElementById("transactionList");
+const actionHeader = document.getElementById("actionHeader");
 
-const totalIncomeElement =
-  document.getElementById("totalIncome");
+const totalIncomeElement = document.getElementById("totalIncome");
+const totalExpenseElement = document.getElementById("totalExpense");
+const balanceElement = document.getElementById("balance");
+const balanceNote = document.getElementById("balanceNote");
 
-const totalExpenseElement =
-  document.getElementById("totalExpense");
+const statusElement = document.getElementById("statusMessage");
+const entryCount = document.getElementById("entryCount");
+const emptyMessage = document.getElementById("emptyMessage");
 
-const balanceElement =
-  document.getElementById("balance");
+const searchInput = document.getElementById("searchInput");
+const filterType = document.getElementById("filterType");
+const refreshBtn = document.getElementById("refreshBtn");
 
-const statusElement =
-  document.getElementById("status");
 
 /* 4. Helper Functions */
 
 function setHidden(element, hidden) {
-  if (element) {
-    element.hidden = hidden;
-  }
+  if (!element) return;
+
+  element.hidden = hidden;
+  element.classList.toggle("hidden", hidden);
 }
 
 function showStatus(message, isError = false) {
@@ -97,10 +104,17 @@ function showStatus(message, isError = false) {
   statusElement.style.color = isError ? "#c62828" : "#18794e";
 }
 
+function showLoginError(message) {
+  if (loginError) {
+    loginError.textContent = message;
+  }
+}
+
 function formatMoney(amount) {
-  return Number(amount || 0).toLocaleString("en-BD", {
+  return "৳ " + Number(amount || 0).toLocaleString("en-BD", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: 2
-  }) + " ৳";
+  });
 }
 
 function escapeHTML(value) {
@@ -113,7 +127,8 @@ function escapeHTML(value) {
   })[char]);
 }
 
-/* 5. Check Admin Permission */
+
+/* 5. Admin Permission Check */
 
 async function checkAdminPermission(user) {
   const adminRef = doc(db, "admins", user.uid);
@@ -123,22 +138,46 @@ async function checkAdminPermission(user) {
     adminSnapshot.data().role === "admin";
 }
 
-/* 6. Login */
+
+/* 6. Open and Close Login Dialog */
+
+if (adminLoginBtn && loginDialog) {
+  adminLoginBtn.addEventListener("click", () => {
+    showLoginError("");
+
+    if (!loginDialog.open) {
+      loginDialog.showModal();
+    }
+  });
+}
+
+if (closeLoginBtn && loginDialog) {
+  closeLoginBtn.addEventListener("click", () => {
+    loginDialog.close();
+  });
+}
+
+
+/* 7. Admin Login */
 
 if (loginForm) {
   loginForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    showLoginError("");
 
     const email = emailInput?.value.trim();
     const password = passwordInput?.value;
 
     if (!email || !password) {
-      showStatus("ইমেইল ও পাসওয়ার্ড লিখো।", true);
+      showLoginError("ইমেইল ও পাসওয়ার্ড লিখো।");
       return;
     }
 
     try {
-      showStatus("লগইন যাচাই হচ্ছে...");
+      if (loginSubmitBtn) {
+        loginSubmitBtn.disabled = true;
+        loginSubmitBtn.textContent = "যাচাই হচ্ছে...";
+      }
 
       const credential = await signInWithEmailAndPassword(
         auth,
@@ -150,33 +189,54 @@ if (loginForm) {
 
       if (!allowed) {
         await signOut(auth);
-        showStatus(
-          "এই অ্যাকাউন্ট Admin নয়। admins collection-এ UID ও role পরীক্ষা করো।",
-          true
+        showLoginError(
+          "এই অ্যাকাউন্ট Admin নয়। Firebase admins collection-এ UID ও role পরীক্ষা করো।"
         );
         return;
       }
 
-      showStatus("Admin লগইন সফল।");
       if (passwordInput) passwordInput.value = "";
+
+      if (loginDialog?.open) {
+        loginDialog.close();
+      }
+
+      showStatus("Admin লগইন সফল।");
 
     } catch (error) {
       console.error("Login error:", error);
-      showStatus(
-        `লগইন ব্যর্থ: ${error.code || error.message}`,
-        true
+
+      const messages = {
+        "auth/invalid-credential": "ইমেইল অথবা পাসওয়ার্ড ভুল।",
+        "auth/invalid-email": "সঠিক ইমেইল ঠিকানা লিখো।",
+        "auth/too-many-requests": "অনেকবার চেষ্টা হয়েছে। পরে আবার চেষ্টা করো।",
+        "auth/network-request-failed": "ইন্টারনেট সংযোগ পরীক্ষা করো।",
+        "permission-denied": "Admin অনুমতি যাচাই করা যায়নি। Firestore Rules পরীক্ষা করো।"
+      };
+
+      showLoginError(
+        messages[error.code] ||
+        `লগইন ব্যর্থ: ${error.code || error.message}`
       );
+
+    } finally {
+      if (loginSubmitBtn) {
+        loginSubmitBtn.disabled = false;
+        loginSubmitBtn.textContent = "লগইন করুন";
+      }
     }
   });
 }
 
-/* 7. Logout */
+
+/* 8. Admin Logout */
 
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
     try {
       await signOut(auth);
       showStatus("লগআউট সফল।");
+
     } catch (error) {
       console.error("Logout error:", error);
       showStatus("লগআউট করা যায়নি।", true);
@@ -184,10 +244,8 @@ if (logoutBtn) {
   });
 }
 
-/* 8. Load Public Transactions
-   সবাই হিসাব দেখতে পারবে।
-   Firestore Rules-এ public read অনুমোদিত থাকতে হবে।
-*/
+
+/* 9. Load Public Transactions */
 
 function loadTransactions() {
   if (unsubscribeTransactions) {
@@ -218,10 +276,12 @@ function loadTransactions() {
 
       renderTotals();
       renderTransactions();
+      showStatus("আয়-ব্যয়ের হিসাব আপডেট হয়েছে।");
     },
 
     (error) => {
       console.error("Firestore read error:", error);
+
       showStatus(
         `হিসাব লোড হয়নি: ${error.code || error.message}`,
         true
@@ -230,7 +290,8 @@ function loadTransactions() {
   );
 }
 
-/* 9. Calculate Income, Expense and Balance */
+
+/* 10. Calculate Financial Summary */
 
 function renderTotals() {
   const income = transactions.reduce((sum, item) => {
@@ -258,56 +319,117 @@ function renderTotals() {
   if (balanceElement) {
     balanceElement.textContent = formatMoney(balance);
   }
+
+  if (balanceNote) {
+    balanceNote.textContent = balance < 0
+      ? "ব্যয়ের পরিমাণ আয়ের চেয়ে বেশি"
+      : "আয় থেকে ব্যয় বাদ দিয়ে";
+  }
 }
 
-/* 10. Display Transaction List */
+
+/* 11. Search and Filter */
+
+function getFilteredTransactions() {
+  const query = (searchInput?.value || "").trim().toLowerCase();
+  const selectedType = filterType?.value || "all";
+
+  return transactions.filter((item) => {
+    const matchesType =
+      selectedType === "all" || item.type === selectedType;
+
+    const searchableText = [
+      item.person,
+      item.category,
+      item.description,
+      item.date
+    ].join(" ").toLowerCase();
+
+    const matchesSearch = searchableText.includes(query);
+
+    return matchesType && matchesSearch;
+  });
+}
+
+
+/* 12. Render Transaction Table */
 
 function renderTransactions() {
   if (!transactionList) return;
 
-  if (transactions.length === 0) {
-    transactionList.innerHTML =
-      '<p class="empty-message">এখনো কোনো হিসাব যোগ করা হয়নি।</p>';
+  const filtered = getFilteredTransactions();
+
+  if (entryCount) {
+    entryCount.textContent = `${filtered.length}টি এন্ট্রি`;
+  }
+
+  setHidden(actionHeader, !isAdmin);
+
+  if (filtered.length === 0) {
+    transactionList.innerHTML = `
+      <tr>
+        <td colspan="${isAdmin ? 6 : 5}" class="empty-state">
+          কোনো হিসাব পাওয়া যায়নি।
+        </td>
+      </tr>
+    `;
+
+    setHidden(emptyMessage, true);
     return;
   }
 
-  transactionList.innerHTML = transactions.map((item) => {
+  setHidden(emptyMessage, true);
+
+  transactionList.innerHTML = filtered.map((item) => {
     const isIncome = item.type === "income";
     const typeText = isIncome ? "আয়" : "ব্যয়";
     const amountClass = isIncome ? "income" : "expense";
 
-    const date = escapeHTML(item.date || "তারিখ নেই");
-    const category = escapeHTML(item.category || typeText);
+    const date = escapeHTML(item.date || "—");
     const description = escapeHTML(item.description || "—");
+    const person = escapeHTML(item.person || "—");
+    const category = escapeHTML(item.category || typeText);
     const amount = formatMoney(item.amount);
 
     const deleteButton = isAdmin
-      ? `<button type="button"
-          class="delete-btn"
-          data-delete-id="${escapeHTML(item.id)}">
-          মুছুন
-        </button>`
+      ? `<td>
+           <button
+             type="button"
+             class="delete-btn"
+             data-delete-id="${escapeHTML(item.id)}">
+             মুছুন
+           </button>
+         </td>`
       : "";
 
     return `
-      <article class="transaction-item">
-        <div class="transaction-details">
-          <strong>${category}</strong>
-          <p>${description}</p>
-          <small>${date}</small>
-        </div>
+      <tr>
+        <td>${date}</td>
 
-        <div class="transaction-amount ${amountClass}">
+        <td>
+          <strong>${description}</strong>
+          <br>
+          <small>${category}</small>
+        </td>
+
+        <td>${person}</td>
+
+        <td>
+          <span class="${amountClass}">${typeText}</span>
+        </td>
+
+        <td class="amount-column ${amountClass}">
           <strong>${isIncome ? "+" : "−"}${amount}</strong>
-          <span>${typeText}</span>
-          ${deleteButton}
-        </div>
-      </article>
+        </td>
+
+        ${deleteButton}
+      </tr>
     `;
   }).join("");
 }
 
-/* 11. Add Transaction — Admin Only */
+
+/* 13. Add Transaction — Admin Only */
 
 if (transactionForm) {
   transactionForm.addEventListener("submit", async (event) => {
@@ -318,14 +440,15 @@ if (transactionForm) {
       return;
     }
 
-    const formData = new FormData(transactionForm);
-
-    const type = String(formData.get("type") || "");
-    const amount = Number(formData.get("amount"));
-    const date = String(formData.get("date") || "");
-    const category = String(formData.get("category") || "").trim();
+    const type = document.getElementById("type")?.value;
+    const amount = Number(
+      document.getElementById("amount")?.value
+    );
+    const date = document.getElementById("date")?.value;
+    const person = document.getElementById("person")?.value.trim() || "";
+    const category = document.getElementById("category")?.value;
     const description =
-      String(formData.get("description") || "").trim();
+      document.getElementById("description")?.value.trim();
 
     if (!["income", "expense"].includes(type)) {
       showStatus("হিসাবের ধরন নির্বাচন করো।", true);
@@ -337,16 +460,24 @@ if (transactionForm) {
       return;
     }
 
-    if (!date) {
-      showStatus("তারিখ নির্বাচন করো।", true);
+    if (!date || !category || !description) {
+      showStatus("প্রয়োজনীয় সব তথ্য পূরণ করো।", true);
       return;
     }
 
+    const submitBtn = document.getElementById("submitBtn");
+
     try {
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "সংরক্ষণ হচ্ছে...";
+      }
+
       await addDoc(collection(db, "transactions"), {
         type,
         amount,
         date,
+        person,
         category,
         description,
         createdAt: serverTimestamp(),
@@ -358,19 +489,28 @@ if (transactionForm) {
 
     } catch (error) {
       console.error("Add transaction error:", error);
+
       showStatus(
         `হিসাব যোগ হয়নি: ${error.code || error.message}`,
         true
       );
+
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "+ হিসাব সংরক্ষণ করুন";
+      }
     }
   });
 }
 
-/* 12. Delete Transaction — Admin Only */
+
+/* 14. Delete Transaction — Admin Only */
 
 if (transactionList) {
   transactionList.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-delete-id]");
+
     if (!button) return;
 
     if (!currentUser || !isAdmin) {
@@ -379,6 +519,7 @@ if (transactionList) {
     }
 
     const transactionId = button.dataset.deleteId;
+
     if (!transactionId) return;
 
     if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) {
@@ -386,22 +527,48 @@ if (transactionList) {
     }
 
     try {
-      await deleteDoc(doc(db, "transactions", transactionId));
+      button.disabled = true;
+
+      await deleteDoc(
+        doc(db, "transactions", transactionId)
+      );
+
       showStatus("হিসাব মুছে ফেলা হয়েছে।");
 
     } catch (error) {
       console.error("Delete transaction error:", error);
+
       showStatus(
         `হিসাব মোছা যায়নি: ${error.code || error.message}`,
         true
       );
+
+      button.disabled = false;
     }
   });
 }
 
-/* 13. Authentication State
-   লগইন ছাড়াও হিসাব লোড হবে।
-*/
+
+/* 15. Search and Filter Events */
+
+if (searchInput) {
+  searchInput.addEventListener("input", renderTransactions);
+}
+
+if (filterType) {
+  filterType.addEventListener("change", renderTransactions);
+}
+
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    renderTotals();
+    renderTransactions();
+    showStatus("দেখানো হিসাব রিফ্রেশ করা হয়েছে।");
+  });
+}
+
+
+/* 16. Authentication State */
 
 onAuthStateChanged(auth, async (user) => {
   const version = ++authCheckVersion;
@@ -413,20 +580,21 @@ onAuthStateChanged(auth, async (user) => {
   setHidden(adminLoginBtn, Boolean(user));
   setHidden(logoutBtn, true);
 
-  // আগের Firestore listener বন্ধ করে নতুনটি চালু করা
+  // লগইন ছাড়াই প্রকাশিত হিসাব লোড হবে
   loadTransactions();
 
   if (!user) {
     showStatus(
       "সবার জন্য আয়-ব্যয়ের হিসাব দেখানো হচ্ছে। নতুন হিসাব যোগ করতে Admin লগইন করো।"
     );
+
+    renderTransactions();
     return;
   }
 
   try {
     const allowed = await checkAdminPermission(user);
 
-    // এর মধ্যে নতুন auth state এলে পুরোনো ফল উপেক্ষা করো
     if (version !== authCheckVersion) return;
 
     if (!allowed) {
@@ -434,25 +602,6 @@ onAuthStateChanged(auth, async (user) => {
         "এই অ্যাকাউন্টের Admin অনুমতি নেই।",
         true
       );
-       const loginDialog = document.getElementById("loginDialog");
-const closeLoginBtn = document.getElementById("closeLoginBtn");
-const loginError = document.getElementById("loginError");
-
-if (adminLoginBtn && loginDialog) {
-  adminLoginBtn.addEventListener("click", () => {
-    if (typeof loginDialog.showModal === "function") {
-      loginDialog.showModal();
-    } else {
-      loginDialog.setAttribute("open", "");
-    }
-  });
-}
-
-if (closeLoginBtn && loginDialog) {
-  closeLoginBtn.addEventListener("click", () => {
-    loginDialog.close();
-  });
-}
 
       await signOut(auth);
       return;
@@ -476,26 +625,16 @@ if (closeLoginBtn && loginDialog) {
       `Admin যাচাই ব্যর্থ: ${error.code || error.message}`,
       true
     );
+
+    // যাচাই ব্যর্থ হলে Admin সুবিধা বন্ধ থাকবে
+    isAdmin = false;
+    setHidden(adminPanel, true);
+    renderTransactions();
   }
 });
 
-/* 14. Initial Display */
+
+/* 17. Initial Display */
 
 renderTotals();
 renderTransactions();
-const loginDialog = document.getElementById("loginDialog");
-const closeLoginBtn = document.getElementById("closeLoginBtn");
-
-if (adminLoginBtn && loginDialog) {
-  adminLoginBtn.onclick = () => {
-    if (!loginDialog.open) {
-      loginDialog.showModal();
-    }
-  };
-}
-
-if (closeLoginBtn && loginDialog) {
-  closeLoginBtn.onclick = () => {
-    loginDialog.close();
-  };
-}
