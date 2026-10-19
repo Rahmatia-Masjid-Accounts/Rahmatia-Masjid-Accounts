@@ -4,39 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#102b55">
-  <meta name="description" content="দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদের ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল ২০২৬-এর আয়-ব্যয়ের হিসাব।">
+
+  <meta name="description"
+    content="দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদের ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল ২০২৬-এর আয়-ব্যয়ের হিসাব।">
 
   <title>মাহফিল হিসাব | Rahmatia Masjid</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body>
+
+  <!-- Header -->
   <header class="site-header">
     <div class="container header-inner">
+
       <a class="brand" href="#">
         <div class="brand-logo">☪</div>
+
         <div>
           <strong>রহমাতিয়া মসজিদ</strong>
           <span>OFFICIAL EVENT ACCOUNTS</span>
         </div>
       </a>
 
-      <button id="adminLoginBtn" class="btn btn-light" type="button">
+      <button
+        id="adminLoginBtn"
+        class="btn btn-light"
+        type="button">
         🔐 অ্যাডমিন লগইন
       </button>
+
     </div>
   </header>
 
+
   <main>
+
+    <!-- Hero Section -->
     <section class="hero">
       <div class="container hero-content">
-        <span class="eyebrow">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>
-        <p class="event-label">আয়োজনে: দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদ</p>
-        <h1>৪র্থ ঐতিহাসিক<br>তাফসিরুল কুরআন মাহফিল</h1>
+
+        <span class="eyebrow">
+          بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+        </span>
+
+        <p class="event-label">
+          আয়োজনে: দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদ
+        </p>
+
+        <h1>
+          ৪র্থ ঐতিহাসিক<br>
+          তাফসিরুল কুরআন মাহফিল
+        </h1>
+
         <p class="hero-subtitle">
           মাহফিল ২০২৬ · আয়-ব্যয়ের স্বচ্ছ হিসাব
         </p>
@@ -46,95 +73,146 @@
           <span>✓ স্বচ্ছতা ও জবাবদিহি</span>
           <span>✓ সবার জন্য উন্মুক্ত</span>
         </div>
+
       </div>
     </section>
 
+
+    <!-- Financial Dashboard -->
     <section class="container dashboard">
+
       <div class="section-heading">
         <div>
           <span class="section-kicker">FINANCIAL OVERVIEW</span>
           <h2>হিসাবের সারসংক্ষেপ</h2>
           <p>মাহফিলের আর্থিক অবস্থার সর্বশেষ হিসাব</p>
         </div>
-        <button id="refreshBtn" class="btn btn-outline" type="button">
+
+        <button
+          id="refreshBtn"
+          class="btn btn-outline"
+          type="button">
           ↻ রিফ্রেশ
         </button>
       </div>
 
+
+      <!-- Summary Cards -->
       <div class="summary-grid">
+
         <article class="summary-card income-card">
           <div class="summary-top">
             <span class="summary-icon">↙</span>
             <span class="summary-label">মোট আয়</span>
           </div>
+
           <strong id="totalIncome">৳ ০</strong>
           <p>সর্বমোট জমা ও অনুদান</p>
         </article>
+
 
         <article class="summary-card expense-card">
           <div class="summary-top">
             <span class="summary-icon">↗</span>
             <span class="summary-label">মোট ব্যয়</span>
           </div>
+
           <strong id="totalExpense">৳ ০</strong>
           <p>সর্বমোট খরচ</p>
         </article>
+
 
         <article class="summary-card balance-card">
           <div class="summary-top">
             <span class="summary-icon">৳</span>
             <span class="summary-label">বর্তমান ব্যালেন্স</span>
           </div>
+
           <strong id="balance">৳ ০</strong>
           <p id="balanceNote">আয় থেকে ব্যয় বাদ দিয়ে</p>
         </article>
+
       </div>
 
-      <div id="statusMessage" class="status-message" role="status">
+
+      <!-- Status Message -->
+      <div
+        id="statusMessage"
+        class="status-message"
+        role="status"
+        aria-live="polite">
         হিসাবের তথ্য লোড হচ্ছে...
       </div>
 
+
+      <!-- Admin Panel -->
       <section id="adminPanel" class="panel hidden">
+
         <div class="panel-heading">
           <div>
             <span class="section-kicker">ADMINISTRATION</span>
             <h2>নতুন হিসাব যোগ করুন</h2>
           </div>
-          <button id="logoutBtn" class="btn btn-danger-outline" type="button">
+
+          <button
+            id="logoutBtn"
+            class="btn btn-danger-outline"
+            type="button">
             লগআউট
           </button>
         </div>
 
+
         <form id="transactionForm">
+
           <div class="form-grid">
+
             <label>
               হিসাবের ধরন *
-              <select id="type" required>
+              <select id="type" name="type" required>
                 <option value="income">আয় / অনুদান</option>
                 <option value="expense">ব্যয় / খরচ</option>
               </select>
             </label>
 
+
             <label>
               টাকার পরিমাণ (৳) *
-              <input id="amount" type="number" min="0.01"
-                step="0.01" placeholder="যেমন: ৫০০০" required>
+              <input
+                id="amount"
+                name="amount"
+                type="number"
+                min="0.01"
+                step="0.01"
+                placeholder="যেমন: ৫০০০"
+                required>
             </label>
+
 
             <label>
               দাতা / প্রাপক / প্রতিষ্ঠানের নাম
-              <input id="person" type="text" maxlength="150"
+              <input
+                id="person"
+                name="person"
+                type="text"
+                maxlength="150"
                 placeholder="নাম লিখুন">
             </label>
 
+
             <label>
               তারিখ *
-              <input id="date" type="date" required>
+              <input
+                id="date"
+                name="date"
+                type="date"
+                required>
             </label>
+
 
             <label>
               বিভাগ *
-              <select id="category" required>
+              <select id="category" name="category" required>
                 <option value="অনুদান">অনুদান</option>
                 <option value="চাঁদা">চাঁদা</option>
                 <option value="অন্যান্য আয়">অন্যান্য আয়</option>
@@ -146,45 +224,78 @@
               </select>
             </label>
 
+
             <label class="full-width">
               বিবরণ *
-              <textarea id="description" rows="3" maxlength="500"
+              <textarea
+                id="description"
+                name="description"
+                rows="3"
+                maxlength="500"
                 placeholder="কী বাবদ টাকা জমা বা খরচ হয়েছে লিখুন"
                 required></textarea>
             </label>
+
           </div>
 
-          <button id="submitBtn" class="btn btn-primary" type="submit">
+
+          <button
+            id="submitBtn"
+            class="btn btn-primary"
+            type="submit">
             + হিসাব সংরক্ষণ করুন
           </button>
+
         </form>
       </section>
 
+
+      <!-- Transaction Ledger -->
       <section class="panel ledger-panel">
+
         <div class="panel-heading ledger-heading">
           <div>
             <span class="section-kicker">TRANSACTION LEDGER</span>
             <h2>আয়-ব্যয়ের বিস্তারিত</h2>
             <p>প্রকাশিত আর্থিক লেনদেনের তালিকা</p>
           </div>
-          <span id="entryCount" class="count-badge">০টি এন্ট্রি</span>
+
+          <span id="entryCount" class="count-badge">
+            ০টি এন্ট্রি
+          </span>
         </div>
 
+
+        <!-- Search and Filter -->
         <div class="filter-bar">
+
           <label class="search-box">
             <span>⌕</span>
-            <input id="searchInput" type="search"
-              placeholder="নাম বা বিবরণ দিয়ে খুঁজুন">
+
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="নাম বা বিবরণ দিয়ে খুঁজুন"
+              aria-label="হিসাব খুঁজুন">
           </label>
 
-          <select id="filterType" aria-label="হিসাবের ধরন অনুযায়ী ফিল্টার">
+
+          <select
+            id="filterType"
+            aria-label="হিসাবের ধরন অনুযায়ী ফিল্টার">
+
             <option value="all">সব হিসাব</option>
             <option value="income">শুধু আয়</option>
             <option value="expense">শুধু ব্যয়</option>
+
           </select>
+
         </div>
 
+
+        <!-- Transactions Table -->
         <div class="table-wrap">
+
           <table>
             <thead>
               <tr>
@@ -196,6 +307,7 @@
                 <th id="actionHeader" class="hidden">অ্যাকশন</th>
               </tr>
             </thead>
+
             <tbody id="transactionList">
               <tr>
                 <td colspan="6" class="empty-state">
@@ -204,72 +316,140 @@
               </tr>
             </tbody>
           </table>
+
         </div>
+
 
         <div id="emptyMessage" class="empty-message hidden">
           <span>📒</span>
           <strong>কোনো হিসাব পাওয়া যায়নি</strong>
           <p>নতুন হিসাব যোগ হলে এখানে দেখা যাবে।</p>
         </div>
+
       </section>
 
+
+      <!-- Transparency Note -->
       <section class="transparency-note">
+
         <div class="note-icon">✦</div>
+
         <div>
           <h3>স্বচ্ছ হিসাব, সবার আস্থা</h3>
+
           <p>
             মাহফিলের আয়-ব্যয়ের তথ্য সবার সামনে তুলে ধরাই এই উদ্যোগের উদ্দেশ্য।
             ভুল বা অসংগতি দেখলে আয়োজক কমিটির সঙ্গে যোগাযোগ করুন।
           </p>
         </div>
+
       </section>
+
     </section>
+
   </main>
 
+
+  <!-- Footer -->
   <footer class="site-footer">
+
     <div class="container footer-inner">
+
       <div>
-        <strong>দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদ</strong>
-        <p>৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল · ২০২৬</p>
+        <strong>
+          দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদ
+        </strong>
+
+        <p>
+          ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল · ২০২৬
+        </p>
       </div>
+
       <span>সততা · স্বচ্ছতা · আমানতদারি</span>
+
     </div>
+
     <div class="footer-bottom">
       © 2026 Rahmatia Masjid Accounts. All rights reserved.
     </div>
+
   </footer>
+
 
   <!-- Admin Login Dialog -->
   <dialog id="loginDialog" class="login-dialog">
+
     <form id="loginForm" class="login-form">
-      <button id="closeLoginBtn" class="dialog-close"
-        type="button" aria-label="বন্ধ করুন">×</button>
+
+      <button
+        id="closeLoginBtn"
+        class="dialog-close"
+        type="button"
+        aria-label="বন্ধ করুন">
+        ×
+      </button>
 
       <div class="login-symbol">🔐</div>
+
       <span class="section-kicker">ADMIN ACCESS</span>
+
       <h2>অ্যাডমিন লগইন</h2>
-      <p>অনুমোদিত অ্যাডমিনের ইমেইল ও পাসওয়ার্ড দিন।</p>
+
+      <p>
+        অনুমোদিত অ্যাডমিনের ইমেইল ও পাসওয়ার্ড দিন।
+      </p>
+
 
       <label>
         ইমেইল ঠিকানা
-        <input id="loginEmail" type="email"
-          autocomplete="username" placeholder="admin@example.com" required>
+        <input
+          id="loginEmail"
+          name="email"
+          type="email"
+          autocomplete="username"
+          placeholder="admin@example.com"
+          required>
       </label>
+
 
       <label>
         পাসওয়ার্ড
-        <input id="loginPassword" type="password"
-          autocomplete="current-password" placeholder="আপনার পাসওয়ার্ড" required>
+        <input
+          id="loginPassword"
+          name="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="আপনার পাসওয়ার্ড"
+          required>
       </label>
 
-      <p id="loginError" class="form-error" role="alert"></p>
 
-      <button id="loginSubmitBtn" class="btn btn-primary full-button"
-        type="submit">লগইন করুন</button>
+      <p
+        id="loginError"
+        class="form-error"
+        role="alert"
+        aria-live="polite"></p>
 
-      <p class="login-footnote">শুধু অনুমোদিত অ্যাডমিন প্রবেশ করতে পারবেন।</p>
+
+      <button
+        id="loginSubmitBtn"
+        class="btn btn-primary full-button"
+        type="submit">
+        লগইন করুন
+      </button>
+
+
+      <p class="login-footnote">
+        শুধু অনুমোদিত অ্যাডমিন প্রবেশ করতে পারবেন।
+      </p>
+
     </form>
+
   </dialog>
 
-  <script type="module" src="app.js?v=2"></script>
-  </html>
+
+  <!-- JavaScript -->
+  <script type="module" src="app.js?v=3"></script>
+
+</body>
+</html>
