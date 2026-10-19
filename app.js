@@ -30,7 +30,7 @@ import {
 /* 1. Firebase Configuration */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDwTC0C3b1NE2CAIrs4FZjuCXLA2VtPDC-YE",
+  apiKey: "AIzaSyDw0TC3b1NE2CAIrs4FZjuCXLA2VtPDC-YE",
   authDomain: "rahmatia-masjid-accounts.firebaseapp.com",
   projectId: "rahmatia-masjid-accounts",
   storageBucket: "rahmatia-masjid-accounts.firebasestorage.app",
