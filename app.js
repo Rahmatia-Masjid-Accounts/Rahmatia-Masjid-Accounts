@@ -483,3 +483,19 @@ if (closeLoginBtn && loginDialog) {
 
 renderTotals();
 renderTransactions();
+const loginDialog = document.getElementById("loginDialog");
+const closeLoginBtn = document.getElementById("closeLoginBtn");
+
+if (adminLoginBtn && loginDialog) {
+  adminLoginBtn.onclick = () => {
+    if (!loginDialog.open) {
+      loginDialog.showModal();
+    }
+  };
+}
+
+if (closeLoginBtn && loginDialog) {
+  closeLoginBtn.onclick = () => {
+    loginDialog.close();
+  };
+}
