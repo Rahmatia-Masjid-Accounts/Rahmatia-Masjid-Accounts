@@ -352,7 +352,209 @@
     </section>
 
   </main>
+<!-- Rahmatia Masjid Accounts: Mahfil Countdown -->
+<section id="rm-countdown">
+  <div class="rmc-header">
+    <span class="rmc-icon">◷</span>
+    <div>
+      <h3>মাহফিল কাউন্টডাউন</h3>
+      <p>৪র্থ তাফসিরুল কুরআন মাহফিল</p>
+    </div>
+  </div>
 
+  <div class="rmc-timer">
+    <div class="rmc-unit">
+      <strong id="rmc-days">০০</strong>
+      <span>দিন</span>
+    </div>
+    <div class="rmc-unit">
+      <strong id="rmc-hours">০০</strong>
+      <span>ঘণ্টা</span>
+    </div>
+    <div class="rmc-unit">
+      <strong id="rmc-minutes">০০</strong>
+      <span>মিনিট</span>
+    </div>
+    <div class="rmc-unit">
+      <strong id="rmc-seconds">০০</strong>
+      <span>সেকেন্ড</span>
+    </div>
+  </div>
+
+  <div class="rmc-footer" id="rmc-message">
+    মাহফিলের আর কত দিন বাকি
+  </div>
+</section>
+
+<style>
+#rm-countdown {
+  --rmc-primary: #2563eb;
+  --rmc-green: #16a34a;
+  --rmc-text: #1f2937;
+  --rmc-muted: #64748b;
+  --rmc-border: #e2e8f0;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 24px auto;
+  padding: 20px;
+  border: 1px solid var(--rmc-border);
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--rmc-text);
+  font-family: inherit;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+}
+
+#rm-countdown * {
+  box-sizing: border-box;
+}
+
+#rm-countdown .rmc-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+#rm-countdown .rmc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: var(--rmc-primary);
+  font-size: 27px;
+}
+
+#rm-countdown .rmc-header h3 {
+  margin: 0 0 5px;
+  color: var(--rmc-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+#rm-countdown .rmc-header p {
+  margin: 0;
+  color: var(--rmc-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+#rm-countdown .rmc-timer {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+#rm-countdown .rmc-unit {
+  min-width: 0;
+  padding: 16px 3px 12px;
+  text-align: center;
+  border: 1px solid #dbeafe;
+  border-radius: 11px;
+  background: #f8fafc;
+}
+
+#rm-countdown .rmc-unit strong {
+  display: block;
+  color: var(--rmc-primary);
+  font-size: clamp(23px, 5vw, 34px);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+
+#rm-countdown .rmc-unit span {
+  display: block;
+  margin-top: 5px;
+  color: var(--rmc-muted);
+  font-size: 12px;
+}
+
+#rm-countdown .rmc-footer {
+  margin-top: 17px;
+  padding: 11px 12px;
+  border-radius: 9px;
+  background: #f0fdf4;
+  color: #15803d;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+@media (max-width: 380px) {
+  #rm-countdown {
+    padding: 14px;
+  }
+
+  #rm-countdown .rmc-timer {
+    gap: 6px;
+  }
+
+  #rm-countdown .rmc-unit {
+    padding: 12px 2px 10px;
+  }
+
+  #rm-countdown .rmc-unit span {
+    font-size: 11px;
+  }
+}
+</style>
+
+<script>
+(function () {
+  const root = document.getElementById("rm-countdown");
+  if (!root || root.dataset.initialized) return;
+  root.dataset.initialized = "true";
+
+  const target = new Date(
+    "2026-12-28T00:00:00+06:00"
+  ).getTime();
+
+  const el = id => root.querySelector("#" + id);
+
+  const bn = n => String(n).padStart(2, "0")
+    .replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[Number(d)]);
+
+  function update() {
+    let remaining = target - Date.now();
+
+    if (remaining <= 0) {
+      ["rmc-days", "rmc-hours", "rmc-minutes", "rmc-seconds"]
+        .forEach(id => el(id).textContent = "০০");
+
+      el("rmc-message").textContent =
+        "মাহফিলের নির্ধারিত তারিখ এসে গেছে।";
+      return false;
+    }
+
+    const days = Math.floor(remaining / 86400000);
+    remaining %= 86400000;
+
+    const hours = Math.floor(remaining / 3600000);
+    remaining %= 3600000;
+
+    const minutes = Math.floor(remaining / 60000);
+    const seconds = Math.floor((remaining % 60000) / 1000);
+
+    el("rmc-days").textContent = bn(days);
+    el("rmc-hours").textContent = bn(hours);
+    el("rmc-minutes").textContent = bn(minutes);
+    el("rmc-seconds").textContent = bn(seconds);
+
+    return true;
+  }
+
+  update();
+  const timer = setInterval(() => {
+    if (!update()) clearInterval(timer);
+  }, 1000);
+})();
+</script>
 
   <!-- Footer -->
   <footer class="site-footer">
