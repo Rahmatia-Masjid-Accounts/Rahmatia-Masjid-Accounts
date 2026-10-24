@@ -68,8 +68,23 @@ const loginError = document.getElementById("loginError");
 const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 
 const transactionForm = document.getElementById("transactionForm");
-const transactionList = document.getElementById("transactionList");
-const actionHeader = document.getElementById("actionHeader");
+const incomeTransactionList =
+  document.getElementById("incomeTransactionList");
+
+const expenseTransactionList =
+  document.getElementById("expenseTransactionList");
+
+const incomeActionHeader =
+  document.getElementById("incomeActionHeader");
+
+const expenseActionHeader =
+  document.getElementById("expenseActionHeader");
+
+const incomeLedgerTotal =
+  document.getElementById("incomeLedgerTotal");
+
+const expenseLedgerTotal =
+  document.getElementById("expenseLedgerTotal");
 
 const totalIncomeElement = document.getElementById("totalIncome");
 const totalExpenseElement = document.getElementById("totalExpense");
