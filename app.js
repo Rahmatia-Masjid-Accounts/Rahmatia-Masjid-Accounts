@@ -470,10 +470,7 @@ function renderTransactions() {
       `মোট ব্যয়: ${formatMoney(totalExpense)}`;
   }
 }
-  setHidden(emptyMessage, true);
-
-  transactionList.innerHTML = filtered.map((item) => {
-    const isIncome = item.type === "income";
+	 const isIncome = item.type === "income";
     const typeText = isIncome ? "আয়" : "ব্যয়";
     const amountClass = isIncome ? "income" : "expense";
 
