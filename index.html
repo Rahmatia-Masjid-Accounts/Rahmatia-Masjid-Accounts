@@ -303,33 +303,64 @@
           </select>
 
         </div>
+<!-- Separate Income and Expense Ledgers -->
+<section class="ledger-section income-ledger">
+  <div class="ledger-subheading">
+    <h3>🟢 আয়ের হিসাব</h3>
+    <span id="incomeLedgerTotal">মোট আয়: ৳ ০</span>
+  </div>
 
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>তারিখ</th>
+          <th>বিবরণ</th>
+          <th>নাম</th>
+          <th class="amount-column">পরিমাণ</th>
+          <th id="incomeActionHeader" class="hidden">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody id="incomeTransactionList">
+        <tr>
+          <td colspan="5" class="empty-state">আয়ের তথ্য লোড হচ্ছে...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-        <!-- Transactions Table -->
-        <div class="table-wrap">
+<section class="ledger-section expense-ledger">
+  <div class="ledger-subheading">
+    <h3>🔴 ব্যয়ের হিসাব</h3>
+    <span id="expenseLedgerTotal">মোট ব্যয়: ৳ ০</span>
+  </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>তারিখ</th>
-                <th>বিবরণ</th>
-                <th>নাম</th>
-                <th>ধরন</th>
-                <th class="amount-column">পরিমাণ</th>
-                <th id="actionHeader" class="hidden">অ্যাকশন</th>
-              </tr>
-            </thead>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>তারিখ</th>
+          <th>বিবরণ</th>
+          <th>নাম</th>
+          <th class="amount-column">পরিমাণ</th>
+          <th id="expenseActionHeader" class="hidden">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody id="expenseTransactionList">
+        <tr>
+          <td colspan="5" class="empty-state">ব্যয়ের তথ্য লোড হচ্ছে...</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
-            <tbody id="transactionList">
-              <tr>
-                <td colspan="6" class="empty-state">
-                  হিসাবের তথ্য লোড হচ্ছে...
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
+<div id="emptyMessage" class="empty-message hidden">
+  <span>📒</span>
+  <strong>কোনো হিসাব পাওয়া যায়নি</strong>
+  <p>সার্চ বা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</p>
+</div>
 
 
         <div id="emptyMessage" class="empty-message hidden">
