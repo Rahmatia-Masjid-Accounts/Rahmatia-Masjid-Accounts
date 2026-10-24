@@ -352,32 +352,109 @@ function getFilteredTransactions() {
 }
 
 
-/* 12. Render Transaction Table */
+/* 12. Render Separate Income and Expense Tables */
 
 function renderTransactions() {
-  if (!transactionList) return;
+  if (!incomeTransactionList || !expenseTransactionList) return;
 
   const filtered = getFilteredTransactions();
+
+  const incomeItems = filtered.filter(
+    item => item.type === "income"
+  );
+
+  const expenseItems = filtered.filter(
+    item => item.type === "expense"
+  );
 
   if (entryCount) {
     entryCount.textContent = `${filtered.length}টি এন্ট্রি`;
   }
 
-  setHidden(actionHeader, !isAdmin);
+  setHidden(incomeActionHeader, !isAdmin);
+  setHidden(expenseActionHeader, !isAdmin);
+  setHidden(emptyMessage, filtered.length > 0);
 
-  if (filtered.length === 0) {
-    transactionList.innerHTML = `
-      <tr>
-        <td colspan="${isAdmin ? 6 : 5}" class="empty-state">
-          কোনো হিসাব পাওয়া যায়নি।
-        </td>
-      </tr>
-    `;
+  function renderRows(items, type) {
+    const isIncome = type === "income";
+    const tbody = isIncome
+      ? incomeTransactionList
+      : expenseTransactionList;
 
-    setHidden(emptyMessage, true);
-    return;
+    const colspan = isAdmin ? 5 : 4;
+
+    if (items.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="${colspan}" class="empty-state">
+            ${isIncome
+              ? "কোনো আয়ের হিসাব পাওয়া যায়নি।"
+              : "কোনো ব্যয়ের হিসাব পাওয়া যায়নি।"}
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = items.map(item => {
+      const typeText = isIncome ? "আয়" : "ব্যয়";
+      const amountClass = isIncome ? "income" : "expense";
+
+      const date = escapeHTML(item.date || "—");
+      const description = escapeHTML(item.description || "—");
+      const person = escapeHTML(item.person || "—");
+      const category = escapeHTML(item.category || typeText);
+      const amount = formatMoney(item.amount);
+
+      const deleteButton = isAdmin
+        ? `<td>
+             <button type="button"
+               class="delete-btn"
+               data-delete-id="${escapeHTML(item.id)}">
+               মুছুন
+             </button>
+           </td>`
+        : "";
+
+      return `
+        <tr>
+          <td>${date}</td>
+          <td>
+            <strong>${description}</strong>
+            <br>
+            <small>${category}</small>
+          </td>
+          <td>${person}</td>
+          <td class="amount-column ${amountClass}">
+            <strong>${isIncome ? "+" : "−"}${amount}</strong>
+          </td>
+          ${deleteButton}
+        </tr>
+      `;
+    }).join("");
   }
 
+  renderRows(incomeItems, "income");
+  renderRows(expenseItems, "expense");
+
+  const totalIncome = incomeItems.reduce(
+    (sum, item) => sum + Number(item.amount || 0), 0
+  );
+
+  const totalExpense = expenseItems.reduce(
+    (sum, item) => sum + Number(item.amount || 0), 0
+  );
+
+  if (incomeLedgerTotal) {
+    incomeLedgerTotal.textContent =
+      `মোট আয়: ${formatMoney(totalIncome)}`;
+  }
+
+  if (expenseLedgerTotal) {
+    expenseLedgerTotal.textContent =
+      `মোট ব্যয়: ${formatMoney(totalExpense)}`;
+  }
+}
   setHidden(emptyMessage, true);
 
   transactionList.innerHTML = filtered.map((item) => {
