@@ -1043,3 +1043,77 @@ td.amount-column {
     animation-duration: 0.01ms !important;
   }
   }
+/* Separate Income and Expense Ledgers */
+.ledger-section {
+  margin-top: 24px;
+  padding: 18px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 15px;
+  box-shadow: 0 5px 18px rgba(16, 43, 85, 0.04);
+}
+
+.ledger-subheading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.ledger-subheading h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 21px;
+}
+
+#incomeLedgerTotal,
+#expenseLedgerTotal {
+  padding: 7px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+#incomeLedgerTotal {
+  color: var(--green);
+  background: #e8f7ef;
+}
+
+#expenseLedgerTotal {
+  color: var(--red);
+  background: #fff0f1;
+}
+
+.income-ledger {
+  border-top: 3px solid var(--green);
+}
+
+.expense-ledger {
+  border-top: 3px solid var(--red);
+}
+
+.ledger-section .table-wrap {
+  margin-top: 10px;
+}
+
+.ledger-section table {
+  min-width: 600px;
+}
+
+@media (max-width: 560px) {
+  .ledger-section {
+    padding: 12px;
+    margin-top: 18px;
+  }
+
+  .ledger-subheading h3 {
+    font-size: 18px;
+  }
+
+  .ledger-section td,
+  .ledger-section th {
+    padding: 12px 10px;
+  }
+}
