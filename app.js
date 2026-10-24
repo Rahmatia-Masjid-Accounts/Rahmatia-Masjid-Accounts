@@ -1,6 +1,7 @@
 /* ==========================================
    Rahmatia Masjid Accounts
    Firebase + Firestore
+   Corrected Complete app.js
    ========================================== */
 
 import { initializeApp } from
@@ -68,6 +69,7 @@ const loginError = document.getElementById("loginError");
 const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 
 const transactionForm = document.getElementById("transactionForm");
+
 const incomeTransactionList =
   document.getElementById("incomeTransactionList");
 
@@ -149,19 +151,25 @@ async function checkAdminPermission(user) {
   const adminRef = doc(db, "admins", user.uid);
   const adminSnapshot = await getDoc(adminRef);
 
-  return adminSnapshot.exists() &&
-    adminSnapshot.data().role === "admin";
+  return (
+    adminSnapshot.exists() &&
+    adminSnapshot.data().role === "admin"
+  );
 }
 
 
-/* 6. Open and Close Login Dialog */
+/* 6. Login Dialog */
 
 if (adminLoginBtn && loginDialog) {
   adminLoginBtn.addEventListener("click", () => {
     showLoginError("");
 
-    if (!loginDialog.open) {
-      loginDialog.showModal();
+    if (typeof loginDialog.showModal === "function") {
+      if (!loginDialog.open) {
+        loginDialog.showModal();
+      }
+    } else {
+      showLoginError("লগইন ডায়ালগ খুলতে সমস্যা হয়েছে।");
     }
   });
 }
@@ -204,13 +212,16 @@ if (loginForm) {
 
       if (!allowed) {
         await signOut(auth);
+
         showLoginError(
-          "এই অ্যাকাউন্ট Admin নয়। Firebase admins collection-এ UID ও role পরীক্ষা করো।"
+          "এই অ্যাকাউন্ট Admin নয়। Firebase-এর admins collection-এ UID ও role পরীক্ষা করো।"
         );
         return;
       }
 
-      if (passwordInput) passwordInput.value = "";
+      if (passwordInput) {
+        passwordInput.value = "";
+      }
 
       if (loginDialog?.open) {
         loginDialog.close();
@@ -222,11 +233,20 @@ if (loginForm) {
       console.error("Login error:", error);
 
       const messages = {
-        "auth/invalid-credential": "ইমেইল অথবা পাসওয়ার্ড ভুল।",
-        "auth/invalid-email": "সঠিক ইমেইল ঠিকানা লিখো।",
-        "auth/too-many-requests": "অনেকবার চেষ্টা হয়েছে। পরে আবার চেষ্টা করো।",
-        "auth/network-request-failed": "ইন্টারনেট সংযোগ পরীক্ষা করো।",
-        "permission-denied": "Admin অনুমতি যাচাই করা যায়নি। Firestore Rules পরীক্ষা করো।"
+        "auth/invalid-credential":
+          "ইমেইল অথবা পাসওয়ার্ড ভুল।",
+
+        "auth/invalid-email":
+          "সঠিক ইমেইল ঠিকানা লিখো।",
+
+        "auth/too-many-requests":
+          "অনেকবার চেষ্টা হয়েছে। পরে আবার চেষ্টা করো।",
+
+        "auth/network-request-failed":
+          "ইন্টারনেট সংযোগ পরীক্ষা করো।",
+
+        "permission-denied":
+          "Admin অনুমতি যাচাই করা যায়নি। Firestore Rules পরীক্ষা করো।"
       };
 
       showLoginError(
@@ -241,6 +261,10 @@ if (loginForm) {
       }
     }
   });
+} else {
+  console.error(
+    'Login form পাওয়া যায়নি। index.html-এ id="loginForm" পরীক্ষা করো।'
+  );
 }
 
 
@@ -260,7 +284,7 @@ if (logoutBtn) {
 }
 
 
-/* 9. Load Public Transactions */
+/* 9. Load Transactions from Firestore */
 
 function loadTransactions() {
   if (unsubscribeTransactions) {
@@ -285,12 +309,15 @@ function loadTransactions() {
           return dateB.localeCompare(dateA);
         }
 
-        return (b.createdAt?.seconds || 0) -
-          (a.createdAt?.seconds || 0);
+        return (
+          (b.createdAt?.seconds || 0) -
+          (a.createdAt?.seconds || 0)
+        );
       });
 
       renderTotals();
       renderTransactions();
+
       showStatus("আয়-ব্যয়ের হিসাব আপডেট হয়েছে।");
     },
 
@@ -360,9 +387,7 @@ function getFilteredTransactions() {
       item.date
     ].join(" ").toLowerCase();
 
-    const matchesSearch = searchableText.includes(query);
-
-    return matchesType && matchesSearch;
+    return matchesType && searchableText.includes(query);
   });
 }
 
@@ -370,16 +395,21 @@ function getFilteredTransactions() {
 /* 12. Render Separate Income and Expense Tables */
 
 function renderTransactions() {
-  if (!incomeTransactionList || !expenseTransactionList) return;
+  if (!incomeTransactionList || !expenseTransactionList) {
+    console.error(
+      "আয় বা ব্যয়ের টেবিল পাওয়া যায়নি। HTML-এ incomeTransactionList ও expenseTransactionList ID পরীক্ষা করো।"
+    );
+    return;
+  }
 
   const filtered = getFilteredTransactions();
 
   const incomeItems = filtered.filter(
-    item => item.type === "income"
+    (item) => item.type === "income"
   );
 
   const expenseItems = filtered.filter(
-    item => item.type === "expense"
+    (item) => item.type === "expense"
   );
 
   if (entryCount) {
@@ -392,6 +422,7 @@ function renderTransactions() {
 
   function renderRows(items, type) {
     const isIncome = type === "income";
+
     const tbody = isIncome
       ? incomeTransactionList
       : expenseTransactionList;
@@ -411,9 +442,9 @@ function renderTransactions() {
       return;
     }
 
-    tbody.innerHTML = items.map(item => {
-      const typeText = isIncome ? "আয়" : "ব্যয়";
+    tbody.innerHTML = items.map((item) => {
       const amountClass = isIncome ? "income" : "expense";
+      const typeText = isIncome ? "আয়" : "ব্যয়";
 
       const date = escapeHTML(item.date || "—");
       const description = escapeHTML(item.description || "—");
@@ -423,7 +454,8 @@ function renderTransactions() {
 
       const deleteButton = isAdmin
         ? `<td>
-             <button type="button"
+             <button
+               type="button"
                class="delete-btn"
                data-delete-id="${escapeHTML(item.id)}">
                মুছুন
@@ -453,11 +485,13 @@ function renderTransactions() {
   renderRows(expenseItems, "expense");
 
   const totalIncome = incomeItems.reduce(
-    (sum, item) => sum + Number(item.amount || 0), 0
+    (sum, item) => sum + Number(item.amount || 0),
+    0
   );
 
   const totalExpense = expenseItems.reduce(
-    (sum, item) => sum + Number(item.amount || 0), 0
+    (sum, item) => sum + Number(item.amount || 0),
+    0
   );
 
   if (incomeLedgerTotal) {
@@ -469,52 +503,6 @@ function renderTransactions() {
     expenseLedgerTotal.textContent =
       `মোট ব্যয়: ${formatMoney(totalExpense)}`;
   }
-}
-	 const isIncome = item.type === "income";
-    const typeText = isIncome ? "আয়" : "ব্যয়";
-    const amountClass = isIncome ? "income" : "expense";
-
-    const date = escapeHTML(item.date || "—");
-    const description = escapeHTML(item.description || "—");
-    const person = escapeHTML(item.person || "—");
-    const category = escapeHTML(item.category || typeText);
-    const amount = formatMoney(item.amount);
-
-    const deleteButton = isAdmin
-      ? `<td>
-           <button
-             type="button"
-             class="delete-btn"
-             data-delete-id="${escapeHTML(item.id)}">
-             মুছুন
-           </button>
-         </td>`
-      : "";
-
-    return `
-      <tr>
-        <td>${date}</td>
-
-        <td>
-          <strong>${description}</strong>
-          <br>
-          <small>${category}</small>
-        </td>
-
-        <td>${person}</td>
-
-        <td>
-          <span class="${amountClass}">${typeText}</span>
-        </td>
-
-        <td class="amount-column ${amountClass}">
-          <strong>${isIncome ? "+" : "−"}${amount}</strong>
-        </td>
-
-        ${deleteButton}
-      </tr>
-    `;
-  }).join("");
 }
 
 
@@ -530,12 +518,19 @@ if (transactionForm) {
     }
 
     const type = document.getElementById("type")?.value;
+
     const amount = Number(
       document.getElementById("amount")?.value
     );
+
     const date = document.getElementById("date")?.value;
-    const person = document.getElementById("person")?.value.trim() || "";
-    const category = document.getElementById("category")?.value;
+
+    const person =
+      document.getElementById("person")?.value.trim() || "";
+
+    const category =
+      document.getElementById("category")?.value;
+
     const description =
       document.getElementById("description")?.value.trim();
 
@@ -574,6 +569,7 @@ if (transactionForm) {
       });
 
       transactionForm.reset();
+
       showStatus("নতুন হিসাব সফলভাবে যোগ হয়েছে।");
 
     } catch (error) {
@@ -591,16 +587,21 @@ if (transactionForm) {
       }
     }
   });
+} else {
+  console.error(
+    'Transaction form পাওয়া যায়নি। index.html-এ id="transactionForm" পরীক্ষা করো।'
+  );
 }
 
 
 /* 14. Delete Transaction — Admin Only */
 
-[incomeTransactionList, expenseTransactionList].forEach(tbody => {
+[incomeTransactionList, expenseTransactionList].forEach((tbody) => {
   if (!tbody) return;
 
-  tbody.addEventListener("click", async event => {
+  tbody.addEventListener("click", async (event) => {
     const button = event.target.closest("[data-delete-id]");
+
     if (!button) return;
 
     if (!currentUser || !isAdmin) {
@@ -609,9 +610,12 @@ if (transactionForm) {
     }
 
     const transactionId = button.dataset.deleteId;
+
     if (!transactionId) return;
 
-    if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) return;
+    if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) {
+      return;
+    }
 
     try {
       button.disabled = true;
@@ -621,19 +625,22 @@ if (transactionForm) {
       );
 
       showStatus("হিসাব মুছে ফেলা হয়েছে।");
+
     } catch (error) {
       console.error("Delete transaction error:", error);
+
       showStatus(
         `হিসাব মোছা যায়নি: ${error.code || error.message}`,
         true
       );
+
       button.disabled = false;
     }
   });
 });
 
 
-/* 15. Search and Filter Events */
+/* 15. Search, Filter and Refresh */
 
 if (searchInput) {
   searchInput.addEventListener("input", renderTransactions);
@@ -664,7 +671,7 @@ onAuthStateChanged(auth, async (user) => {
   setHidden(adminLoginBtn, Boolean(user));
   setHidden(logoutBtn, true);
 
-  // লগইন ছাড়াই প্রকাশিত হিসাব লোড হবে
+  // লগইন ছাড়াই হিসাব দেখানোর চেষ্টা
   loadTransactions();
 
   if (!user) {
@@ -705,15 +712,13 @@ onAuthStateChanged(auth, async (user) => {
 
     if (version !== authCheckVersion) return;
 
+    isAdmin = false;
+    setHidden(adminPanel, true);
+
     showStatus(
       `Admin যাচাই ব্যর্থ: ${error.code || error.message}`,
       true
     );
-
-    // যাচাই ব্যর্থ হলে Admin সুবিধা বন্ধ থাকবে
-    isAdmin = false;
-    setHidden(adminPanel, true);
-    renderTransactions();
   }
 });
 
@@ -722,3 +727,5 @@ onAuthStateChanged(auth, async (user) => {
 
 renderTotals();
 renderTransactions();
+
+console.log("Rahmatia Masjid Accounts app.js loaded successfully.");
