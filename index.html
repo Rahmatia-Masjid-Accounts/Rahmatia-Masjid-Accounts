@@ -6,35 +6,41 @@
   <meta name="theme-color" content="#102b55">
 
   <meta name="description"
-    content="দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদের ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল ২০২৬-এর আয়-ব্যয়ের হিসাব।">
+    content="দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদের ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল ২০২৬-এর আয়-ব্যয়ের স্বচ্ছ হিসাব।">
 
+  <meta name="author" content="Rahmatia Masjid Accounts">
   <title>মাহফিল হিসাব | Rahmatia Masjid</title>
-  <!-- Google Analytics: Rahmatia Masjid Accounts -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-C9D79JWDWG"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-C9D79JWDWG');
-</script>
 
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C9D79JWDWG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      window.dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+    gtag("config", "G-C9D79JWDWG");
+  </script>
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=3">
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
 
-  <!-- Header -->
+  <!-- ================= HEADER ================= -->
   <header class="site-header">
     <div class="container header-inner">
 
-      <a class="brand" href="#">
-        <div class="brand-logo">☪</div>
+      <a class="brand" href="#" aria-label="Rahmatia Masjid Accounts হোম">
+        <div class="brand-logo" aria-hidden="true">☪</div>
 
         <div>
           <strong>রহমাতিয়া মসজিদ</strong>
@@ -55,7 +61,7 @@
 
   <main>
 
-    <!-- Hero Section -->
+    <!-- ================= HERO ================= -->
     <section class="hero">
       <div class="container hero-content">
 
@@ -86,7 +92,7 @@
     </section>
 
 
-    <!-- Financial Dashboard -->
+    <!-- ================= FINANCIAL DASHBOARD ================= -->
     <section class="container dashboard">
 
       <div class="section-heading">
@@ -110,7 +116,7 @@
 
         <article class="summary-card income-card">
           <div class="summary-top">
-            <span class="summary-icon">↙</span>
+            <span class="summary-icon" aria-hidden="true">↙</span>
             <span class="summary-label">মোট আয়</span>
           </div>
 
@@ -118,10 +124,9 @@
           <p>সর্বমোট জমা ও অনুদান</p>
         </article>
 
-
         <article class="summary-card expense-card">
           <div class="summary-top">
-            <span class="summary-icon">↗</span>
+            <span class="summary-icon" aria-hidden="true">↗</span>
             <span class="summary-label">মোট ব্যয়</span>
           </div>
 
@@ -129,10 +134,9 @@
           <p>সর্বমোট খরচ</p>
         </article>
 
-
         <article class="summary-card balance-card">
           <div class="summary-top">
-            <span class="summary-icon">৳</span>
+            <span class="summary-icon" aria-hidden="true">৳</span>
             <span class="summary-label">বর্তমান ব্যালেন্স</span>
           </div>
 
@@ -143,7 +147,7 @@
       </div>
 
 
-      <!-- Status Message -->
+      <!-- Status -->
       <div
         id="statusMessage"
         class="status-message"
@@ -153,13 +157,14 @@
       </div>
 
 
-      <!-- Admin Panel -->
+      <!-- ================= ADMIN PANEL ================= -->
       <section id="adminPanel" class="panel hidden">
 
         <div class="panel-heading">
           <div>
             <span class="section-kicker">ADMINISTRATION</span>
             <h2>নতুন হিসাব যোগ করুন</h2>
+            <p>সঠিক তথ্য দিয়ে লেনদেন সংরক্ষণ করুন</p>
           </div>
 
           <button
@@ -175,7 +180,7 @@
 
           <div class="form-grid">
 
-            <label>
+            <label for="type">
               হিসাবের ধরন *
               <select id="type" name="type" required>
                 <option value="income">আয় / অনুদান</option>
@@ -184,7 +189,7 @@
             </label>
 
 
-            <label>
+            <label for="amount">
               টাকার পরিমাণ (৳) *
               <input
                 id="amount"
@@ -192,12 +197,13 @@
                 type="number"
                 min="0.01"
                 step="0.01"
+                inputmode="decimal"
                 placeholder="যেমন: ৫০০০"
                 required>
             </label>
 
 
-            <label>
+            <label for="person">
               দাতা / প্রাপক / প্রতিষ্ঠানের নাম
               <input
                 id="person"
@@ -208,7 +214,7 @@
             </label>
 
 
-            <label>
+            <label for="date">
               তারিখ *
               <input
                 id="date"
@@ -218,26 +224,26 @@
             </label>
 
 
-            <label>
-  বিভাগ *
-  <select id="category" name="category" required>
-    <option value="রশিদ বাবদ">রশিদ বাবদ</option>
-    <option value="বাজার কালেকশন">বাজার কালেকশন</option>
-    <option value="মাঠ কালেকশন">মাঠ কালেকশন</option>
-    <option value="গ্রাম কালেকশন">গ্রাম কালেকশন</option>
-    <option value="অনুদান">অনুদান</option>
-    <option value="চাঁদা">চাঁদা</option>
-    <option value="অন্যান্য আয়">অন্যান্য আয়</option>
-    <option value="মঞ্চ ও সাউন্ড">মঞ্চ ও সাউন্ড</option>
-    <option value="খাবার">খাবার</option>
-    <option value="প্রচার">প্রচার</option>
-    <option value="যাতায়াত">যাতায়াত</option>
-    <option value="অন্যান্য ব্যয়">অন্যান্য ব্যয়</option>
-  </select>
+            <label for="category">
+              বিভাগ *
+              <select id="category" name="category" required>
+                <option value="রশিদ বাবদ">রশিদ বাবদ</option>
+                <option value="বাজার কালেকশন">বাজার কালেকশন</option>
+                <option value="মাঠ কালেকশন">মাঠ কালেকশন</option>
+                <option value="গ্রাম কালেকশন">গ্রাম কালেকশন</option>
+                <option value="অনুদান">অনুদান</option>
+                <option value="চাঁদা">চাঁদা</option>
+                <option value="অন্যান্য আয়">অন্যান্য আয়</option>
+                <option value="মঞ্চ ও সাউন্ড">মঞ্চ ও সাউন্ড</option>
+                <option value="খাবার">খাবার</option>
+                <option value="প্রচার">প্রচার</option>
+                <option value="যাতায়াত">যাতায়াত</option>
+                <option value="অন্যান্য ব্যয়">অন্যান্য ব্যয়</option>
+              </select>
             </label>
 
 
-            <label class="full-width">
+            <label class="full-width" for="description">
               বিবরণ *
               <textarea
                 id="description"
@@ -262,7 +268,7 @@
       </section>
 
 
-      <!-- Transaction Ledger -->
+      <!-- ================= TRANSACTION LEDGER ================= -->
       <section class="panel ledger-panel">
 
         <div class="panel-heading ledger-heading">
@@ -281,9 +287,8 @@
         <!-- Search and Filter -->
         <div class="filter-bar">
 
-          <label class="search-box">
-            <span>⌕</span>
-
+          <label class="search-box" for="searchInput">
+            <span aria-hidden="true">⌕</span>
             <input
               id="searchInput"
               type="search"
@@ -291,95 +296,104 @@
               aria-label="হিসাব খুঁজুন">
           </label>
 
-
           <select
             id="filterType"
             aria-label="হিসাবের ধরন অনুযায়ী ফিল্টার">
-
             <option value="all">সব হিসাব</option>
             <option value="income">শুধু আয়</option>
             <option value="expense">শুধু ব্যয়</option>
-
           </select>
 
         </div>
-<!-- Separate Income and Expense Ledgers -->
-<section class="ledger-section income-ledger">
-  <div class="ledger-subheading">
-    <h3>🟢 আয়ের হিসাব</h3>
-    <span id="incomeLedgerTotal">মোট আয়: ৳ ০</span>
-  </div>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>তারিখ</th>
-          <th>বিবরণ</th>
-          <th>নাম</th>
-          <th class="amount-column">পরিমাণ</th>
-          <th id="incomeActionHeader" class="hidden">অ্যাকশন</th>
-        </tr>
-      </thead>
-      <tbody id="incomeTransactionList">
-        <tr>
-          <td colspan="5" class="empty-state">আয়ের তথ্য লোড হচ্ছে...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section class="ledger-section expense-ledger">
-  <div class="ledger-subheading">
-    <h3>🔴 ব্যয়ের হিসাব</h3>
-    <span id="expenseLedgerTotal">মোট ব্যয়: ৳ ০</span>
-  </div>
-
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>তারিখ</th>
-          <th>বিবরণ</th>
-          <th>নাম</th>
-          <th class="amount-column">পরিমাণ</th>
-          <th id="expenseActionHeader" class="hidden">অ্যাকশন</th>
-        </tr>
-      </thead>
-      <tbody id="expenseTransactionList">
-        <tr>
-          <td colspan="5" class="empty-state">ব্যয়ের তথ্য লোড হচ্ছে...</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<div id="emptyMessage" class="empty-message hidden">
-  <span>📒</span>
-  <strong>কোনো হিসাব পাওয়া যায়নি</strong>
-  <p>সার্চ বা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</p>
-</div>
 
 
+        <!-- INCOME LEDGER -->
+        <section class="ledger-section income-ledger">
+
+          <div class="ledger-subheading">
+            <h3>🟢 আয়ের হিসাব</h3>
+            <span id="incomeLedgerTotal">মোট আয়: ৳ ০</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">তারিখ</th>
+                  <th scope="col">বিবরণ</th>
+                  <th scope="col">নাম</th>
+                  <th scope="col" class="amount-column">পরিমাণ</th>
+                  <th id="incomeActionHeader" class="hidden" scope="col">
+                    অ্যাকশন
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody id="incomeTransactionList">
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    আয়ের তথ্য লোড হচ্ছে...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+
+
+        <!-- EXPENSE LEDGER -->
+        <section class="ledger-section expense-ledger">
+
+          <div class="ledger-subheading">
+            <h3>🔴 ব্যয়ের হিসাব</h3>
+            <span id="expenseLedgerTotal">মোট ব্যয়: ৳ ০</span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">তারিখ</th>
+                  <th scope="col">বিবরণ</th>
+                  <th scope="col">নাম</th>
+                  <th scope="col" class="amount-column">পরিমাণ</th>
+                  <th id="expenseActionHeader" class="hidden" scope="col">
+                    অ্যাকশন
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody id="expenseTransactionList">
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    ব্যয়ের তথ্য লোড হচ্ছে...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+
+
+        <!-- Only one empty-message element -->
         <div id="emptyMessage" class="empty-message hidden">
-          <span>📒</span>
+          <span aria-hidden="true">📒</span>
           <strong>কোনো হিসাব পাওয়া যায়নি</strong>
-          <p>নতুন হিসাব যোগ হলে এখানে দেখা যাবে।</p>
+          <p>সার্চ বা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</p>
         </div>
 
       </section>
 
 
-      <!-- Transparency Note -->
+      <!-- ================= TRANSPARENCY NOTE ================= -->
       <section class="transparency-note">
 
-        <div class="note-icon">✦</div>
+        <div class="note-icon" aria-hidden="true">✦</div>
 
         <div>
           <h3>স্বচ্ছ হিসাব, সবার আস্থা</h3>
-
           <p>
             মাহফিলের আয়-ব্যয়ের তথ্য সবার সামনে তুলে ধরাই এই উদ্যোগের উদ্দেশ্য।
             ভুল বা অসংগতি দেখলে আয়োজক কমিটির সঙ্গে যোগাযোগ করুন।
@@ -390,224 +404,61 @@
 
     </section>
 
+
+    <!-- ================= MAHFIL COUNTDOWN ================= -->
+    <section class="container">
+      <section id="rm-countdown" aria-label="মাহফিল কাউন্টডাউন">
+
+        <div class="rmc-header">
+          <span class="rmc-icon" aria-hidden="true">◷</span>
+          <div>
+            <h3>মাহফিল কাউন্টডাউন</h3>
+            <p>৪র্থ তাফসিরুল কুরআন মাহফিল</p>
+          </div>
+        </div>
+
+        <div class="rmc-timer">
+
+          <div class="rmc-unit">
+            <strong id="rmc-days">০০</strong>
+            <span>দিন</span>
+          </div>
+
+          <div class="rmc-unit">
+            <strong id="rmc-hours">০০</strong>
+            <span>ঘণ্টা</span>
+          </div>
+
+          <div class="rmc-unit">
+            <strong id="rmc-minutes">০০</strong>
+            <span>মিনিট</span>
+          </div>
+
+          <div class="rmc-unit">
+            <strong id="rmc-seconds">০০</strong>
+            <span>সেকেন্ড</span>
+          </div>
+
+        </div>
+
+        <div class="rmc-footer" id="rmc-message" aria-live="polite">
+          মাহফিলের আর কত দিন বাকি
+        </div>
+
+      </section>
+    </section>
+
   </main>
-<!-- Rahmatia Masjid Accounts: Mahfil Countdown -->
-<section id="rm-countdown">
-  <div class="rmc-header">
-    <span class="rmc-icon">◷</span>
-    <div>
-      <h3>মাহফিল কাউন্টডাউন</h3>
-      <p>৪র্থ তাফসিরুল কুরআন মাহফিল</p>
-    </div>
-  </div>
 
-  <div class="rmc-timer">
-    <div class="rmc-unit">
-      <strong id="rmc-days">০০</strong>
-      <span>দিন</span>
-    </div>
-    <div class="rmc-unit">
-      <strong id="rmc-hours">০০</strong>
-      <span>ঘণ্টা</span>
-    </div>
-    <div class="rmc-unit">
-      <strong id="rmc-minutes">০০</strong>
-      <span>মিনিট</span>
-    </div>
-    <div class="rmc-unit">
-      <strong id="rmc-seconds">০০</strong>
-      <span>সেকেন্ড</span>
-    </div>
-  </div>
 
-  <div class="rmc-footer" id="rmc-message">
-    মাহফিলের আর কত দিন বাকি
-  </div>
-</section>
-
-<style>
-#rm-countdown {
-  --rmc-primary: #2563eb;
-  --rmc-green: #16a34a;
-  --rmc-text: #1f2937;
-  --rmc-muted: #64748b;
-  --rmc-border: #e2e8f0;
-  box-sizing: border-box;
-  width: 100%;
-  margin: 24px auto;
-  padding: 20px;
-  border: 1px solid var(--rmc-border);
-  border-radius: 14px;
-  background: #ffffff;
-  color: var(--rmc-text);
-  font-family: inherit;
-  box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
-}
-
-#rm-countdown * {
-  box-sizing: border-box;
-}
-
-#rm-countdown .rmc-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-#rm-countdown .rmc-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  background: #eff6ff;
-  color: var(--rmc-primary);
-  font-size: 27px;
-}
-
-#rm-countdown .rmc-header h3 {
-  margin: 0 0 5px;
-  color: var(--rmc-text);
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-#rm-countdown .rmc-header p {
-  margin: 0;
-  color: var(--rmc-muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-#rm-countdown .rmc-timer {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-#rm-countdown .rmc-unit {
-  min-width: 0;
-  padding: 16px 3px 12px;
-  text-align: center;
-  border: 1px solid #dbeafe;
-  border-radius: 11px;
-  background: #f8fafc;
-}
-
-#rm-countdown .rmc-unit strong {
-  display: block;
-  color: var(--rmc-primary);
-  font-size: clamp(23px, 5vw, 34px);
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  line-height: 1.4;
-}
-
-#rm-countdown .rmc-unit span {
-  display: block;
-  margin-top: 5px;
-  color: var(--rmc-muted);
-  font-size: 12px;
-}
-
-#rm-countdown .rmc-footer {
-  margin-top: 17px;
-  padding: 11px 12px;
-  border-radius: 9px;
-  background: #f0fdf4;
-  color: #15803d;
-  font-size: 13px;
-  text-align: center;
-  line-height: 1.8;
-}
-
-@media (max-width: 380px) {
-  #rm-countdown {
-    padding: 14px;
-  }
-
-  #rm-countdown .rmc-timer {
-    gap: 6px;
-  }
-
-  #rm-countdown .rmc-unit {
-    padding: 12px 2px 10px;
-  }
-
-  #rm-countdown .rmc-unit span {
-    font-size: 11px;
-  }
-}
-</style>
-
-<script>
-(function () {
-  const root = document.getElementById("rm-countdown");
-  if (!root || root.dataset.initialized) return;
-  root.dataset.initialized = "true";
-
-  const target = new Date(
-    "2026-12-28T00:00:00+06:00"
-  ).getTime();
-
-  const el = id => root.querySelector("#" + id);
-
-  const bn = n => String(n).padStart(2, "0")
-    .replace(/\d/g, d => "০১২৩৪৫৬৭৮৯"[Number(d)]);
-
-  function update() {
-    let remaining = target - Date.now();
-
-    if (remaining <= 0) {
-      ["rmc-days", "rmc-hours", "rmc-minutes", "rmc-seconds"]
-        .forEach(id => el(id).textContent = "০০");
-
-      el("rmc-message").textContent =
-        "মাহফিলের নির্ধারিত তারিখ এসে গেছে।";
-      return false;
-    }
-
-    const days = Math.floor(remaining / 86400000);
-    remaining %= 86400000;
-
-    const hours = Math.floor(remaining / 3600000);
-    remaining %= 3600000;
-
-    const minutes = Math.floor(remaining / 60000);
-    const seconds = Math.floor((remaining % 60000) / 1000);
-
-    el("rmc-days").textContent = bn(days);
-    el("rmc-hours").textContent = bn(hours);
-    el("rmc-minutes").textContent = bn(minutes);
-    el("rmc-seconds").textContent = bn(seconds);
-
-    return true;
-  }
-
-  update();
-  const timer = setInterval(() => {
-    if (!update()) clearInterval(timer);
-  }, 1000);
-})();
-</script>
-
-  <!-- Footer -->
+  <!-- ================= FOOTER ================= -->
   <footer class="site-footer">
 
     <div class="container footer-inner">
 
       <div>
-        <strong>
-          দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদ
-        </strong>
-
-        <p>
-          ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল · ২০২৬
-        </p>
+        <strong>দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদ</strong>
+        <p>৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল · ২০২৬</p>
       </div>
 
       <span>সততা · স্বচ্ছতা · আমানতদারি</span>
@@ -616,13 +467,13 @@
 
     <div class="footer-bottom">
       © 2026 Rahmatia Masjid Accounts. All rights reserved.
-      					Created By Imran Sarker
+      Created By Imran Sarker
     </div>
 
   </footer>
 
 
-  <!-- Admin Login Dialog -->
+  <!-- ================= ADMIN LOGIN DIALOG ================= -->
   <dialog id="loginDialog" class="login-dialog">
 
     <form id="loginForm" class="login-form">
@@ -635,18 +486,14 @@
         ×
       </button>
 
-      <div class="login-symbol">🔐</div>
+      <div class="login-symbol" aria-hidden="true">🔐</div>
 
       <span class="section-kicker">ADMIN ACCESS</span>
-
       <h2>অ্যাডমিন লগইন</h2>
 
-      <p>
-        অনুমোদিত অ্যাডমিনের ইমেইল ও পাসওয়ার্ড দিন।
-      </p>
+      <p>অনুমোদিত অ্যাডমিনের ইমেইল ও পাসওয়ার্ড দিন।</p>
 
-
-      <label>
+      <label for="loginEmail">
         ইমেইল ঠিকানা
         <input
           id="loginEmail"
@@ -657,8 +504,7 @@
           required>
       </label>
 
-
-      <label>
+      <label for="loginPassword">
         পাসওয়ার্ড
         <input
           id="loginPassword"
@@ -669,13 +515,11 @@
           required>
       </label>
 
-
       <p
         id="loginError"
         class="form-error"
         role="alert"
         aria-live="polite"></p>
-
 
       <button
         id="loginSubmitBtn"
@@ -684,49 +528,239 @@
         লগইন করুন
       </button>
 
-
       <p class="login-footnote">
         শুধু অনুমোদিত অ্যাডমিন প্রবেশ করতে পারবেন।
       </p>
 
     </form>
-
   </dialog>
 
 
-  <!-- JavaScript -->
-  
-<!-- Admin Login Dialog Fix -->
-<script>
-  const adminButton = document.getElementById("adminLoginBtn");
-  const adminDialog = document.getElementById("loginDialog");
-  const closeButton = document.getElementById("closeLoginBtn");
+  <!-- ================= COUNTDOWN STYLES ================= -->
+  <style>
+    #rm-countdown {
+      --rmc-primary: #2563eb;
+      --rmc-text: #1f2937;
+      --rmc-muted: #64748b;
+      --rmc-border: #e2e8f0;
 
-  if (adminButton && adminDialog) {
-    adminButton.addEventListener("click", function () {
-      if (!adminDialog.open) {
-        if (typeof adminDialog.showModal === "function") {
-          adminDialog.showModal();
-        } else {
-          adminDialog.setAttribute("open", "");
+      box-sizing: border-box;
+      width: 100%;
+      margin: 24px auto;
+      padding: 20px;
+      border: 1px solid var(--rmc-border);
+      border-radius: 14px;
+      background: #fff;
+      color: var(--rmc-text);
+      font-family: inherit;
+      box-shadow: 0 3px 12px rgba(15, 23, 42, .05);
+    }
+
+    #rm-countdown * {
+      box-sizing: border-box;
+    }
+
+    #rm-countdown .rmc-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    #rm-countdown .rmc-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: #eff6ff;
+      color: var(--rmc-primary);
+      font-size: 27px;
+    }
+
+    #rm-countdown .rmc-header h3 {
+      margin: 0 0 5px;
+      color: var(--rmc-text);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    #rm-countdown .rmc-header p {
+      margin: 0;
+      color: var(--rmc-muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    #rm-countdown .rmc-timer {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    #rm-countdown .rmc-unit {
+      min-width: 0;
+      padding: 16px 3px 12px;
+      text-align: center;
+      border: 1px solid #dbeafe;
+      border-radius: 11px;
+      background: #f8fafc;
+    }
+
+    #rm-countdown .rmc-unit strong {
+      display: block;
+      color: var(--rmc-primary);
+      font-size: clamp(23px, 5vw, 34px);
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.4;
+    }
+
+    #rm-countdown .rmc-unit span {
+      display: block;
+      margin-top: 5px;
+      color: var(--rmc-muted);
+      font-size: 12px;
+    }
+
+    #rm-countdown .rmc-footer {
+      margin-top: 17px;
+      padding: 11px 12px;
+      border-radius: 9px;
+      background: #f0fdf4;
+      color: #15803d;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 380px) {
+      #rm-countdown {
+        padding: 14px;
+      }
+
+      #rm-countdown .rmc-timer {
+        gap: 6px;
+      }
+
+      #rm-countdown .rmc-unit {
+        padding: 12px 2px 10px;
+      }
+
+      #rm-countdown .rmc-unit span {
+        font-size: 11px;
+      }
+    }
+  </style>
+
+
+  <!-- ================= COUNTDOWN SCRIPT ================= -->
+  <script>
+    (function () {
+      const root = document.getElementById("rm-countdown");
+      if (!root || root.dataset.initialized) return;
+
+      root.dataset.initialized = "true";
+
+      // মাহফিলের তারিখ: ২৮ ডিসেম্বর ২০২৬, বাংলাদেশ সময়
+      const target = new Date("2026-12-28T00:00:00+06:00").getTime();
+
+      const el = id => root.querySelector("#" + id);
+
+      const bn = number =>
+        String(number).padStart(2, "0").replace(/\d/g, digit =>
+          "০১২৩৪৫৬৭৮৯"[Number(digit)]
+        );
+
+      function updateCountdown() {
+        let remaining = target - Date.now();
+
+        if (remaining <= 0) {
+          ["rmc-days", "rmc-hours", "rmc-minutes", "rmc-seconds"]
+            .forEach(id => {
+              el(id).textContent = "০০";
+            });
+
+          el("rmc-message").textContent =
+            "মাহফিলের নির্ধারিত তারিখ এসে গেছে।";
+
+          return false;
         }
-      }
-    });
-  }
 
-  if (closeButton && adminDialog) {
-    closeButton.addEventListener("click", function () {
-      if (typeof adminDialog.close === "function") {
-        adminDialog.close();
-      } else {
-        adminDialog.removeAttribute("open");
-      }
-    });
-  }
-</script>
+        const days = Math.floor(remaining / 86400000);
+        remaining %= 86400000;
 
-<script type="module" src="app.js?v=4"></script>
-</body>
-</html>
+        const hours = Math.floor(remaining / 3600000);
+        remaining %= 3600000;
+
+        const minutes = Math.floor(remaining / 60000);
+        const seconds = Math.floor((remaining % 60000) / 1000);
+
+        el("rmc-days").textContent = bn(days);
+        el("rmc-hours").textContent = bn(hours);
+        el("rmc-minutes").textContent = bn(minutes);
+        el("rmc-seconds").textContent = bn(seconds);
+
+        return true;
+      }
+
+      updateCountdown();
+
+      const timer = setInterval(() => {
+        if (!updateCountdown()) {
+          clearInterval(timer);
+        }
+      }, 1000);
+    })();
+  </script>
+
+
+  <!-- ================= LOGIN DIALOG CONTROLS ================= -->
+  <!-- Authentication and admin permission remain handled by app.js -->
+  <script>
+    (function () {
+      const adminButton = document.getElementById("adminLoginBtn");
+      const dialog = document.getElementById("loginDialog");
+      const closeButton = document.getElementById("closeLoginBtn");
+
+      if (adminButton && dialog) {
+        adminButton.addEventListener("click", function () {
+          if (dialog.open) return;
+
+          if (typeof dialog.showModal === "function") {
+            dialog.showModal();
+          } else {
+            dialog.setAttribute("open", "");
+          }
+        });
+      }
+
+      if (closeButton && dialog) {
+        closeButton.addEventListener("click", function () {
+          if (typeof dialog.close === "function") {
+            dialog.close();
+          } else {
+            dialog.removeAttribute("open");
+          }
+        });
+      }
+
+      if (dialog) {
+        dialog.addEventListener("click", function (event) {
+          if (event.target === dialog && typeof dialog.close === "function") {
+            dialog.close();
+          }
+        });
+      }
+    })();
+  </script>
+
+
+  <!-- Main Firebase application -->
+  <script type="module" src="app.js?v=4"></script>
+
 </body>
 </html>
