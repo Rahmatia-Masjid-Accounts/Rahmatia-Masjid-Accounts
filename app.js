@@ -599,10 +599,11 @@ if (transactionForm) {
 
 /* 14. Delete Transaction — Admin Only */
 
-if (transactionList) {
-  transactionList.addEventListener("click", async (event) => {
-    const button = event.target.closest("[data-delete-id]");
+[incomeTransactionList, expenseTransactionList].forEach(tbody => {
+  if (!tbody) return;
 
+  tbody.addEventListener("click", async event => {
+    const button = event.target.closest("[data-delete-id]");
     if (!button) return;
 
     if (!currentUser || !isAdmin) {
@@ -611,12 +612,9 @@ if (transactionList) {
     }
 
     const transactionId = button.dataset.deleteId;
-
     if (!transactionId) return;
 
-    if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) {
-      return;
-    }
+    if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) return;
 
     try {
       button.disabled = true;
@@ -626,19 +624,16 @@ if (transactionList) {
       );
 
       showStatus("হিসাব মুছে ফেলা হয়েছে।");
-
     } catch (error) {
       console.error("Delete transaction error:", error);
-
       showStatus(
         `হিসাব মোছা যায়নি: ${error.code || error.message}`,
         true
       );
-
       button.disabled = false;
     }
   });
-}
+});
 
 
 /* 15. Search and Filter Events */
