@@ -321,15 +321,36 @@
 
   <div id="incomeCategoryLedgers"></div>
 </section>
-
-<!-- EXPENSE LEDGERS -->
+<!-- EXPENSE LEDGER -->
 <section class="ledger-section expense-ledger">
+
   <div class="ledger-subheading">
     <h3>🔴 ব্যয়ের হিসাব</h3>
     <span id="expenseLedgerTotal">মোট ব্যয়: ৳ ০</span>
   </div>
 
-  <div id="expenseCategoryLedgers"></div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>তারিখ</th>
+          <th>বিবরণ</th>
+          <th>নাম</th>
+          <th class="amount-column">পরিমাণ</th>
+          <th id="expenseActionHeader" class="hidden">অ্যাকশন</th>
+        </tr>
+      </thead>
+
+      <tbody id="expenseTransactionList">
+        <tr>
+          <td colspan="5" class="empty-state">
+            ব্যয়ের তথ্য লোড হচ্ছে...
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 </section>
 
         <!-- Only one empty-message element -->
