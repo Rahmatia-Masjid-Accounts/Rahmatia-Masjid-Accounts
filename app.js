@@ -237,7 +237,7 @@ $("loginForm")?.addEventListener("submit", async event => {
 // LOGOUT
 // ========================================
 
-$("logoutBtn")?.addEventListener("click", async () => {
+$("logoutBtn")?.functionaddEventListener("click", async () => {
   try {
     await signOut(auth);
     showMessage("সফলভাবে লগআউট হয়েছে।");
@@ -251,7 +251,25 @@ $("logoutBtn")?.addEventListener("click", async () => {
 // LOAD TRANSACTIONS
 // ========================================
 
-function loadTransactions() {
+ loadTransactions() {
+  if (unsubscribeTransactions) {
+    unsubscribeTransactions();
+    unsubscribeTransactions = null;
+  }
+
+  const tbody = $("expenseTransactionList");
+
+  if (tbody) {
+    tbody.innerHTML =
+      `<tr><td colspan="5">তথ্য লোড হচ্ছে...</td></tr>`;
+  }
+
+  unsubscribeTransactions = onSnapshot(
+    collection(db, "transactions"),
+
+    function loadTransactions() {
+  console.log("FIRESTORE: Loading started");
+
   if (unsubscribeTransactions) {
     unsubscribeTransactions();
     unsubscribeTransactions = null;
@@ -268,43 +286,41 @@ function loadTransactions() {
     collection(db, "transactions"),
 
     snapshot => {
+      console.log("FIRESTORE SUCCESS:", snapshot.size);
+
       transactions = snapshot.docs.map(document => ({
         id: document.id,
         ...document.data()
       }));
 
-      transactions.sort((a, b) => {
-        const dateA = String(a.date || "");
-        const dateB = String(b.date || "");
-        return dateB.localeCompare(dateA);
-      });
+      transactions.sort((a, b) =>
+        String(b.date || "").localeCompare(String(a.date || ""))
+      );
 
       renderTotals();
       renderTransactions();
     },
 
     error => {
-  console.error("FIRESTORE LOAD ERROR:", error);
+      console.error("FIRESTORE ERROR:", error);
 
-  const tbody = $("expenseTransactionList");
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5">
+              তথ্য লোড ব্যর্থ: ${escapeHTML(error.code || error.message)}
+            </td>
+          </tr>
+        `;
+      }
 
-  if (tbody) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="5">
-          হিসাব লোড করা যায়নি।
-          Error: ${escapeHTML(error.code || error.message)}
-        </td>
-      </tr>
-    `;
-  }
-
-  showMessage(
-    "হিসাব লোড সমস্যা: " +
-    (error.code || error.message)
+      showMessage(
+        "Firestore Error: " +
+        (error.code || error.message)
+      );
+    }
   );
     }
-
 // ========================================
 // TOTALS
 // ========================================
