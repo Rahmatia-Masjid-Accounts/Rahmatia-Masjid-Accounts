@@ -184,6 +184,20 @@ $("loginForm")?.addEventListener("submit", async event => {
     showMessage("ইমেইল ও পাসওয়ার্ড প্রদান করুন।");
     return;
   }
+// ========================================
+// LOGIN — CORRECTED
+// ========================================
+
+$("loginForm")?.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const email = $("loginEmail")?.value.trim();
+  const password = $("loginPassword")?.value;
+
+  if (!email || !password) {
+    showMessage("ইমেইল ও পাসওয়ার্ড প্রদান করুন।");
+    return;
+  }
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
@@ -192,14 +206,7 @@ $("loginForm")?.addEventListener("submit", async event => {
     $("loginForm").reset();
 
   } catch (error) {
-  console.error("LOGIN ERROR:", error);
-
-  showMessage(
-    "Login Error Code: " + error.code +
-    "\nবিস্তারিত: " + error.message
-  );
-}
-});
+    console.error("LOGIN ERROR:", error);
 
     const errors = {
       "auth/invalid-credential":
@@ -227,7 +234,10 @@ $("loginForm")?.addEventListener("submit", async event => {
         "Firebase-এ Email/Password Authentication চালু নেই।",
 
       "auth/invalid-api-key":
-        "Firebase API Key সঠিক নয়।"
+        "Firebase API Key সঠিক নয়।",
+
+      "auth/api-key-not-valid.-please-pass-a-valid-api-key.":
+        "Firebase API Key গ্রহণ করা হচ্ছে না। Firebase Console-এর Key যাচাই করুন।"
     };
 
     showMessage(
