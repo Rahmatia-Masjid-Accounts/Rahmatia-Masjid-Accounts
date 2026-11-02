@@ -312,75 +312,25 @@
         </div>
 
 
-        <!-- INCOME LEDGER -->
-        <section class="ledger-section income-ledger">
+<!-- INCOME LEDGERS -->
+<section class="ledger-section income-ledger">
+  <div class="ledger-subheading">
+    <h3>🟢 আয়ের হিসাব</h3>
+    <span id="incomeLedgerTotal">মোট আয়: ৳ ০</span>
+  </div>
 
-          <div class="ledger-subheading">
-            <h3>🟢 আয়ের হিসাব</h3>
-            <span id="incomeLedgerTotal">মোট আয়: ৳ ০</span>
-          </div>
+  <div id="incomeCategoryLedgers"></div>
+</section>
 
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">তারিখ</th>
-                  <th scope="col">বিবরণ</th>
-                  <th scope="col">নাম</th>
-                  <th scope="col" class="amount-column">পরিমাণ</th>
-                  <th id="incomeActionHeader" class="hidden" scope="col">
-                    অ্যাকশন
-                  </th>
-                </tr>
-              </thead>
+<!-- EXPENSE LEDGERS -->
+<section class="ledger-section expense-ledger">
+  <div class="ledger-subheading">
+    <h3>🔴 ব্যয়ের হিসাব</h3>
+    <span id="expenseLedgerTotal">মোট ব্যয়: ৳ ০</span>
+  </div>
 
-              <tbody id="incomeTransactionList">
-                <tr>
-                  <td colspan="5" class="empty-state">
-                    আয়ের তথ্য লোড হচ্ছে...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-        </section>
-
-
-        <!-- EXPENSE LEDGER -->
-        <section class="ledger-section expense-ledger">
-
-          <div class="ledger-subheading">
-            <h3>🔴 ব্যয়ের হিসাব</h3>
-            <span id="expenseLedgerTotal">মোট ব্যয়: ৳ ০</span>
-          </div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th scope="col">তারিখ</th>
-                  <th scope="col">বিবরণ</th>
-                  <th scope="col">নাম</th>
-                  <th scope="col" class="amount-column">পরিমাণ</th>
-                  <th id="expenseActionHeader" class="hidden" scope="col">
-                    অ্যাকশন
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody id="expenseTransactionList">
-                <tr>
-                  <td colspan="5" class="empty-state">
-                    ব্যয়ের তথ্য লোড হচ্ছে...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-        </section>
-
+  <div id="expenseCategoryLedgers"></div>
+</section>
 
         <!-- Only one empty-message element -->
         <div id="emptyMessage" class="empty-message hidden">
