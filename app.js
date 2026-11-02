@@ -1,7 +1,7 @@
 /* ==========================================
    Rahmatia Masjid Accounts
    Firebase + Firestore
-   Corrected Complete app.js
+   Category-wise Income & Expense Ledgers
    ========================================== */
 
 import { initializeApp } from
@@ -31,7 +31,7 @@ import {
 /* 1. Firebase Configuration */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDw0TCb1NE2CAIrs4FZjuCXLA2VtPDC-YE",
+  apiKey: "AIzaSyDwTCb1NE2CAIrs4FZjuCXLA2VtPDC-YE",
   authDomain: "rahmatia-masjid-accounts.firebaseapp.com",
   projectId: "rahmatia-masjid-accounts",
   storageBucket: "rahmatia-masjid-accounts.firebasestorage.app",
@@ -53,7 +53,42 @@ let unsubscribeTransactions = null;
 let authCheckVersion = 0;
 
 
-/* 3. HTML Elements */
+/* 3. Categories */
+
+const incomeCategories = [
+  "রশিদ বাবদ",
+  "গ্রাম কালেকশন",
+  "অন্যান্য"
+];
+
+const expenseCategories = [
+  "মঞ্চ ও সাউন্ড",
+  "খাবার",
+  "প্রচার",
+  "যাতায়াত",
+  "অন্যান্য ব্যয়"
+];
+
+function getCategory(item) {
+  const category = String(item.category || "").trim();
+
+  if (item.type === "income") {
+    return incomeCategories.includes(category)
+      ? category
+      : "অন্যান্য";
+  }
+
+  if (item.type === "expense") {
+    return expenseCategories.includes(category)
+      ? category
+      : "অন্যান্য ব্যয়";
+  }
+
+  return category || "অন্যান্য";
+}
+
+
+/* 4. HTML Elements */
 
 const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("loginEmail");
@@ -63,24 +98,18 @@ const adminLoginBtn = document.getElementById("adminLoginBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const adminPanel = document.getElementById("adminPanel");
 
-const loginDialog = document.getElementById("loginDialog");
-const closeLoginBtn = document.getElementById("closeLoginBtn");
 const loginError = document.getElementById("loginError");
 const loginSubmitBtn = document.getElementById("loginSubmitBtn");
 
 const transactionForm = document.getElementById("transactionForm");
+const typeInput = document.getElementById("type");
+const categoryInput = document.getElementById("category");
 
-const incomeTransactionList =
-  document.getElementById("incomeTransactionList");
+const incomeCategoryLedgers =
+  document.getElementById("incomeCategoryLedgers");
 
-const expenseTransactionList =
-  document.getElementById("expenseTransactionList");
-
-const incomeActionHeader =
-  document.getElementById("incomeActionHeader");
-
-const expenseActionHeader =
-  document.getElementById("expenseActionHeader");
+const expenseCategoryLedgers =
+  document.getElementById("expenseCategoryLedgers");
 
 const incomeLedgerTotal =
   document.getElementById("incomeLedgerTotal");
@@ -88,21 +117,47 @@ const incomeLedgerTotal =
 const expenseLedgerTotal =
   document.getElementById("expenseLedgerTotal");
 
-const totalIncomeElement = document.getElementById("totalIncome");
-const totalExpenseElement = document.getElementById("totalExpense");
-const balanceElement = document.getElementById("balance");
-const balanceNote = document.getElementById("balanceNote");
+const receiptIncomeElement =
+  document.getElementById("receiptIncome");
 
-const statusElement = document.getElementById("statusMessage");
-const entryCount = document.getElementById("entryCount");
-const emptyMessage = document.getElementById("emptyMessage");
+const villageIncomeElement =
+  document.getElementById("villageIncome");
 
-const searchInput = document.getElementById("searchInput");
-const filterType = document.getElementById("filterType");
-const refreshBtn = document.getElementById("refreshBtn");
+const otherIncomeElement =
+  document.getElementById("otherIncome");
+
+const totalIncomeElement =
+  document.getElementById("totalIncome");
+
+const totalExpenseElement =
+  document.getElementById("totalExpense");
+
+const balanceElement =
+  document.getElementById("balance");
+
+const balanceNote =
+  document.getElementById("balanceNote");
+
+const statusElement =
+  document.getElementById("statusMessage");
+
+const entryCount =
+  document.getElementById("entryCount");
+
+const emptyMessage =
+  document.getElementById("emptyMessage");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const filterType =
+  document.getElementById("filterType");
+
+const refreshBtn =
+  document.getElementById("refreshBtn");
 
 
-/* 4. Helper Functions */
+/* 5. Helper Functions */
 
 function setHidden(element, hidden) {
   if (!element) return;
@@ -145,7 +200,7 @@ function escapeHTML(value) {
 }
 
 
-/* 5. Admin Permission Check */
+/* 6. Admin Permission Check */
 
 async function checkAdminPermission(user) {
   const adminRef = doc(db, "admins", user.uid);
@@ -158,30 +213,38 @@ async function checkAdminPermission(user) {
 }
 
 
-/* 6. Login Dialog */
+/* 7. Dynamic Category Options */
 
-if (adminLoginBtn && loginDialog) {
-  adminLoginBtn.addEventListener("click", () => {
-    showLoginError("");
+function updateCategoryOptions() {
+  if (!typeInput || !categoryInput) return;
 
-    if (typeof loginDialog.showModal === "function") {
-      if (!loginDialog.open) {
-        loginDialog.showModal();
-      }
-    } else {
-      showLoginError("লগইন ডায়ালগ খুলতে সমস্যা হয়েছে।");
-    }
-  });
+  const selectedType = typeInput.value;
+
+  const categories = selectedType === "expense"
+    ? expenseCategories
+    : incomeCategories;
+
+  categoryInput.innerHTML = categories.map((category) => {
+    const label = category === "অন্যান্য"
+      ? "অন্যান্য আয়"
+      : category;
+
+    return `
+      <option value="${escapeHTML(category)}">
+        ${escapeHTML(label)}
+      </option>
+    `;
+  }).join("");
 }
 
-if (closeLoginBtn && loginDialog) {
-  closeLoginBtn.addEventListener("click", () => {
-    loginDialog.close();
-  });
+if (typeInput) {
+  typeInput.addEventListener("change", updateCategoryOptions);
 }
 
+updateCategoryOptions();
 
-/* 7. Admin Login */
+
+/* 8. Admin Login */
 
 if (loginForm) {
   loginForm.addEventListener("submit", async (event) => {
@@ -192,7 +255,7 @@ if (loginForm) {
     const password = passwordInput?.value;
 
     if (!email || !password) {
-      showLoginError("ইমেইল ও পাসওয়ার্ড লিখো।");
+      showLoginError("ইমেইল ও পাসওয়ার্ড লিখুন।");
       return;
     }
 
@@ -214,17 +277,13 @@ if (loginForm) {
         await signOut(auth);
 
         showLoginError(
-          "এই অ্যাকাউন্ট Admin নয়। Firebase-এর admins collection-এ UID ও role পরীক্ষা করো।"
+          "এই অ্যাকাউন্ট Admin নয়। Firebase-এর admins collection পরীক্ষা করুন।"
         );
         return;
       }
 
       if (passwordInput) {
         passwordInput.value = "";
-      }
-
-      if (loginDialog?.open) {
-        loginDialog.close();
       }
 
       showStatus("Admin লগইন সফল।");
@@ -237,16 +296,16 @@ if (loginForm) {
           "ইমেইল অথবা পাসওয়ার্ড ভুল।",
 
         "auth/invalid-email":
-          "সঠিক ইমেইল ঠিকানা লিখো।",
+          "সঠিক ইমেইল ঠিকানা লিখুন।",
 
         "auth/too-many-requests":
-          "অনেকবার চেষ্টা হয়েছে। পরে আবার চেষ্টা করো।",
+          "অনেকবার চেষ্টা হয়েছে। পরে আবার চেষ্টা করুন।",
 
         "auth/network-request-failed":
-          "ইন্টারনেট সংযোগ পরীক্ষা করো।",
+          "ইন্টারনেট সংযোগ পরীক্ষা করুন।",
 
         "permission-denied":
-          "Admin অনুমতি যাচাই করা যায়নি। Firestore Rules পরীক্ষা করো।"
+          "Admin অনুমতি যাচাই করা যায়নি।"
       };
 
       showLoginError(
@@ -261,14 +320,10 @@ if (loginForm) {
       }
     }
   });
-} else {
-  console.error(
-    'Login form পাওয়া যায়নি। index.html-এ id="loginForm" পরীক্ষা করো।'
-  );
 }
 
 
-/* 8. Admin Logout */
+/* 9. Admin Logout */
 
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
@@ -284,7 +339,7 @@ if (logoutBtn) {
 }
 
 
-/* 9. Load Transactions from Firestore */
+/* 10. Load Transactions */
 
 function loadTransactions() {
   if (unsubscribeTransactions) {
@@ -333,22 +388,37 @@ function loadTransactions() {
 }
 
 
-/* 10. Calculate Financial Summary */
+/* 11. Calculate All Financial Totals */
 
 function renderTotals() {
-  const income = transactions.reduce((sum, item) => {
-    return sum + (
-      item.type === "income" ? Number(item.amount || 0) : 0
-    );
-  }, 0);
+  const incomeItems = transactions.filter(
+    item => item.type === "income"
+  );
 
-  const expense = transactions.reduce((sum, item) => {
-    return sum + (
-      item.type === "expense" ? Number(item.amount || 0) : 0
-    );
-  }, 0);
+  const expenseItems = transactions.filter(
+    item => item.type === "expense"
+  );
 
+  const sum = items => items.reduce(
+    (total, item) => total + Number(item.amount || 0),
+    0
+  );
+
+  const income = sum(incomeItems);
+  const expense = sum(expenseItems);
   const balance = income - expense;
+
+  const receipt = sum(
+    incomeItems.filter(item => getCategory(item) === "রশিদ বাবদ")
+  );
+
+  const village = sum(
+    incomeItems.filter(item => getCategory(item) === "গ্রাম কালেকশন")
+  );
+
+  const other = sum(
+    incomeItems.filter(item => getCategory(item) === "অন্যান্য")
+  );
 
   if (totalIncomeElement) {
     totalIncomeElement.textContent = formatMoney(income);
@@ -362,6 +432,18 @@ function renderTotals() {
     balanceElement.textContent = formatMoney(balance);
   }
 
+  if (receiptIncomeElement) {
+    receiptIncomeElement.textContent = formatMoney(receipt);
+  }
+
+  if (villageIncomeElement) {
+    villageIncomeElement.textContent = formatMoney(village);
+  }
+
+  if (otherIncomeElement) {
+    otherIncomeElement.textContent = formatMoney(other);
+  }
+
   if (balanceNote) {
     balanceNote.textContent = balance < 0
       ? "ব্যয়ের পরিমাণ আয়ের চেয়ে বেশি"
@@ -370,7 +452,7 @@ function renderTotals() {
 }
 
 
-/* 11. Search and Filter */
+/* 12. Search and Filter */
 
 function getFilteredTransactions() {
   const query = (searchInput?.value || "").trim().toLowerCase();
@@ -392,12 +474,89 @@ function getFilteredTransactions() {
 }
 
 
-/* 12. Render Separate Income and Expense Tables */
+/* 13. Create a Category Ledger Table */
+
+function renderCategoryTable(items, category, type) {
+  const isIncome = type === "income";
+  const colspan = isAdmin ? 5 : 4;
+
+  const rows = items.length
+    ? items.map((item) => {
+        const date = escapeHTML(item.date || "—");
+        const description = escapeHTML(item.description || "—");
+        const person = escapeHTML(item.person || "—");
+        const amount = formatMoney(item.amount);
+
+        const deleteCell = isAdmin
+          ? `<td>
+               <button
+                 type="button"
+                 class="delete-btn"
+                 data-delete-id="${escapeHTML(item.id)}">
+                 মুছুন
+               </button>
+             </td>`
+          : "";
+
+        return `
+          <tr>
+            <td>${date}</td>
+            <td>
+              <strong>${description}</strong>
+            </td>
+            <td>${person}</td>
+            <td class="amount-column ${isIncome ? "income" : "expense"}">
+              <strong>${isIncome ? "+" : "−"}${amount}</strong>
+            </td>
+            ${deleteCell}
+          </tr>
+        `;
+      }).join("")
+    : `
+        <tr>
+          <td colspan="${colspan}" class="empty-state">
+            এই বিভাগে কোনো হিসাব পাওয়া যায়নি।
+          </td>
+        </tr>
+      `;
+
+  const total = items.reduce(
+    (sum, item) => sum + Number(item.amount || 0),
+    0
+  );
+
+  return `
+    <section class="category-ledger">
+      <div class="ledger-subheading">
+        <h4>${escapeHTML(category)}</h4>
+        <span>মোট: ${formatMoney(total)}</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">তারিখ</th>
+              <th scope="col">বিবরণ</th>
+              <th scope="col">নাম</th>
+              <th scope="col" class="amount-column">পরিমাণ</th>
+              ${isAdmin ? '<th scope="col">অ্যাকশন</th>' : ""}
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </section>
+  `;
+}
+
+
+/* 14. Render All Category Ledgers */
 
 function renderTransactions() {
-  if (!incomeTransactionList || !expenseTransactionList) {
+  if (!incomeCategoryLedgers || !expenseCategoryLedgers) {
     console.error(
-      "আয় বা ব্যয়ের টেবিল পাওয়া যায়নি। HTML-এ incomeTransactionList ও expenseTransactionList ID পরীক্ষা করো।"
+      "incomeCategoryLedgers অথবা expenseCategoryLedgers পাওয়া যায়নি। index.html পরীক্ষা করুন।"
     );
     return;
   }
@@ -405,108 +564,57 @@ function renderTransactions() {
   const filtered = getFilteredTransactions();
 
   const incomeItems = filtered.filter(
-    (item) => item.type === "income"
+    item => item.type === "income"
   );
 
   const expenseItems = filtered.filter(
-    (item) => item.type === "expense"
+    item => item.type === "expense"
   );
 
   if (entryCount) {
     entryCount.textContent = `${filtered.length}টি এন্ট্রি`;
   }
 
-  setHidden(incomeActionHeader, !isAdmin);
-  setHidden(expenseActionHeader, !isAdmin);
   setHidden(emptyMessage, filtered.length > 0);
 
-  function renderRows(items, type) {
-    const isIncome = type === "income";
+  incomeCategoryLedgers.innerHTML = incomeCategories.map(category => {
+    const items = incomeItems.filter(
+      item => getCategory(item) === category
+    );
 
-    const tbody = isIncome
-      ? incomeTransactionList
-      : expenseTransactionList;
+    return renderCategoryTable(items, category, "income");
+  }).join("");
 
-    const colspan = isAdmin ? 5 : 4;
+  expenseCategoryLedgers.innerHTML = expenseCategories.map(category => {
+    const items = expenseItems.filter(
+      item => getCategory(item) === category
+    );
 
-    if (items.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="${colspan}" class="empty-state">
-            ${isIncome
-              ? "কোনো আয়ের হিসাব পাওয়া যায়নি।"
-              : "কোনো ব্যয়ের হিসাব পাওয়া যায়নি।"}
-          </td>
-        </tr>
-      `;
-      return;
-    }
+    return renderCategoryTable(items, category, "expense");
+  }).join("");
 
-    tbody.innerHTML = items.map((item) => {
-      const amountClass = isIncome ? "income" : "expense";
-      const typeText = isIncome ? "আয়" : "ব্যয়";
+  // Ledger totals show all records, not only search results.
+  const allIncome = transactions
+    .filter(item => item.type === "income")
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-      const date = escapeHTML(item.date || "—");
-      const description = escapeHTML(item.description || "—");
-      const person = escapeHTML(item.person || "—");
-      const category = escapeHTML(item.category || typeText);
-      const amount = formatMoney(item.amount);
-
-      const deleteButton = isAdmin
-        ? `<td>
-             <button
-               type="button"
-               class="delete-btn"
-               data-delete-id="${escapeHTML(item.id)}">
-               মুছুন
-             </button>
-           </td>`
-        : "";
-
-      return `
-        <tr>
-          <td>${date}</td>
-          <td>
-            <strong>${description}</strong>
-            <br>
-            <small>${category}</small>
-          </td>
-          <td>${person}</td>
-          <td class="amount-column ${amountClass}">
-            <strong>${isIncome ? "+" : "−"}${amount}</strong>
-          </td>
-          ${deleteButton}
-        </tr>
-      `;
-    }).join("");
-  }
-
-  renderRows(incomeItems, "income");
-  renderRows(expenseItems, "expense");
-
-  const totalIncome = incomeItems.reduce(
-    (sum, item) => sum + Number(item.amount || 0),
-    0
-  );
-
-  const totalExpense = expenseItems.reduce(
-    (sum, item) => sum + Number(item.amount || 0),
-    0
-  );
+  const allExpense = transactions
+    .filter(item => item.type === "expense")
+    .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
   if (incomeLedgerTotal) {
     incomeLedgerTotal.textContent =
-      `মোট আয়: ${formatMoney(totalIncome)}`;
+      `মোট আয়: ${formatMoney(allIncome)}`;
   }
 
   if (expenseLedgerTotal) {
     expenseLedgerTotal.textContent =
-      `মোট ব্যয়: ${formatMoney(totalExpense)}`;
+      `মোট ব্যয়: ${formatMoney(allExpense)}`;
   }
 }
 
 
-/* 13. Add Transaction — Admin Only */
+/* 15. Add Transaction — Admin Only */
 
 if (transactionForm) {
   transactionForm.addEventListener("submit", async (event) => {
@@ -517,8 +625,7 @@ if (transactionForm) {
       return;
     }
 
-    const type = document.getElementById("type")?.value;
-
+    const type = typeInput?.value;
     const amount = Number(
       document.getElementById("amount")?.value
     );
@@ -528,24 +635,32 @@ if (transactionForm) {
     const person =
       document.getElementById("person")?.value.trim() || "";
 
-    const category =
-      document.getElementById("category")?.value;
+    const category = categoryInput?.value;
 
     const description =
       document.getElementById("description")?.value.trim();
 
+    const validCategories = type === "income"
+      ? incomeCategories
+      : expenseCategories;
+
     if (!["income", "expense"].includes(type)) {
-      showStatus("হিসাবের ধরন নির্বাচন করো।", true);
+      showStatus("হিসাবের ধরন নির্বাচন করুন।", true);
       return;
     }
 
     if (!Number.isFinite(amount) || amount <= 0) {
-      showStatus("সঠিক টাকার পরিমাণ লিখো।", true);
+      showStatus("সঠিক টাকার পরিমাণ লিখুন।", true);
       return;
     }
 
     if (!date || !category || !description) {
-      showStatus("প্রয়োজনীয় সব তথ্য পূরণ করো।", true);
+      showStatus("প্রয়োজনীয় সব তথ্য পূরণ করুন।", true);
+      return;
+    }
+
+    if (!validCategories.includes(category)) {
+      showStatus("সঠিক বিভাগ নির্বাচন করুন।", true);
       return;
     }
 
@@ -569,6 +684,7 @@ if (transactionForm) {
       });
 
       transactionForm.reset();
+      updateCategoryOptions();
 
       showStatus("নতুন হিসাব সফলভাবে যোগ হয়েছে।");
 
@@ -587,60 +703,64 @@ if (transactionForm) {
       }
     }
   });
-} else {
-  console.error(
-    'Transaction form পাওয়া যায়নি। index.html-এ id="transactionForm" পরীক্ষা করো।'
-  );
 }
 
 
-/* 14. Delete Transaction — Admin Only */
+/* 16. Delete Transaction — Admin Only */
 
-[incomeTransactionList, expenseTransactionList].forEach((tbody) => {
-  if (!tbody) return;
+function handleDeleteClick(event) {
+  const button = event.target.closest("[data-delete-id]");
 
-  tbody.addEventListener("click", async (event) => {
-    const button = event.target.closest("[data-delete-id]");
+  if (!button) return;
 
-    if (!button) return;
+  deleteTransaction(button);
+}
 
-    if (!currentUser || !isAdmin) {
-      showStatus("হিসাব মুছতে Admin লগইন প্রয়োজন।", true);
-      return;
-    }
+async function deleteTransaction(button) {
+  if (!currentUser || !isAdmin) {
+    showStatus("হিসাব মুছতে Admin লগইন প্রয়োজন।", true);
+    return;
+  }
 
-    const transactionId = button.dataset.deleteId;
+  const transactionId = button.dataset.deleteId;
 
-    if (!transactionId) return;
+  if (!transactionId) return;
 
-    if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) {
-      return;
-    }
+  if (!confirm("তুমি কি এই হিসাবটি মুছতে চাও?")) {
+    return;
+  }
 
-    try {
-      button.disabled = true;
+  try {
+    button.disabled = true;
 
-      await deleteDoc(
-        doc(db, "transactions", transactionId)
-      );
+    await deleteDoc(
+      doc(db, "transactions", transactionId)
+    );
 
-      showStatus("হিসাব মুছে ফেলা হয়েছে।");
+    showStatus("হিসাব মুছে ফেলা হয়েছে।");
 
-    } catch (error) {
-      console.error("Delete transaction error:", error);
+  } catch (error) {
+    console.error("Delete transaction error:", error);
 
-      showStatus(
-        `হিসাব মোছা যায়নি: ${error.code || error.message}`,
-        true
-      );
+    showStatus(
+      `হিসাব মোছা যায়নি: ${error.code || error.message}`,
+      true
+    );
 
-      button.disabled = false;
-    }
-  });
-});
+    button.disabled = false;
+  }
+}
+
+if (incomeCategoryLedgers) {
+  incomeCategoryLedgers.addEventListener("click", handleDeleteClick);
+}
+
+if (expenseCategoryLedgers) {
+  expenseCategoryLedgers.addEventListener("click", handleDeleteClick);
+}
 
 
-/* 15. Search, Filter and Refresh */
+/* 17. Search, Filter and Refresh */
 
 if (searchInput) {
   searchInput.addEventListener("input", renderTransactions);
@@ -654,12 +774,12 @@ if (refreshBtn) {
   refreshBtn.addEventListener("click", () => {
     renderTotals();
     renderTransactions();
-    showStatus("দেখানো হিসাব রিফ্রেশ করা হয়েছে।");
+    showStatus("হিসাব রিফ্রেশ করা হয়েছে।");
   });
 }
 
 
-/* 16. Authentication State */
+/* 18. Authentication State */
 
 onAuthStateChanged(auth, async (user) => {
   const version = ++authCheckVersion;
@@ -671,12 +791,11 @@ onAuthStateChanged(auth, async (user) => {
   setHidden(adminLoginBtn, Boolean(user));
   setHidden(logoutBtn, true);
 
-  // লগইন ছাড়াই হিসাব দেখানোর চেষ্টা
   loadTransactions();
 
   if (!user) {
     showStatus(
-      "সবার জন্য আয়-ব্যয়ের হিসাব দেখানো হচ্ছে। নতুন হিসাব যোগ করতে Admin লগইন করো।"
+      "সবার জন্য আয়-ব্যয়ের হিসাব দেখানো হচ্ছে। নতুন হিসাব যোগ করতে Admin লগইন করুন।"
     );
 
     renderTransactions();
@@ -689,11 +808,7 @@ onAuthStateChanged(auth, async (user) => {
     if (version !== authCheckVersion) return;
 
     if (!allowed) {
-      showStatus(
-        "এই অ্যাকাউন্টের Admin অনুমতি নেই।",
-        true
-      );
-
+      showStatus("এই অ্যাকাউন্টের Admin অনুমতি নেই।", true);
       await signOut(auth);
       return;
     }
@@ -723,9 +838,11 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 
-/* 17. Initial Display */
+/* 19. Initial Display */
 
 renderTotals();
 renderTransactions();
 
-console.log("Rahmatia Masjid Accounts app.js loaded successfully.");
+console.log(
+  "Rahmatia Masjid Accounts: Category-wise ledger loaded successfully."
+);
