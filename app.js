@@ -284,11 +284,26 @@ function loadTransactions() {
     },
 
     error => {
-      console.error("Firestore error:", error);
-      showMessage("হিসাবের তথ্য লোড করা যায়নি।");
-    }
+  console.error("FIRESTORE LOAD ERROR:", error);
+
+  const tbody = $("expenseTransactionList");
+
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5">
+          হিসাব লোড করা যায়নি।
+          Error: ${escapeHTML(error.code || error.message)}
+        </td>
+      </tr>
+    `;
+  }
+
+  showMessage(
+    "হিসাব লোড সমস্যা: " +
+    (error.code || error.message)
   );
-}
+    }
 
 // ========================================
 // TOTALS
