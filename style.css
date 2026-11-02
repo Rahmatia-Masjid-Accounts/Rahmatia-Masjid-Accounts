@@ -1162,3 +1162,18 @@ td.amount-column {
     grid-template-columns: 1fr;
   }
 }
+.expense-category {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.category-ledger {
+  margin-top: 20px;
+}
+
+.category-ledger .ledger-subheading h4 {
+  margin: 0;
+  font-size: 16px;
+}
