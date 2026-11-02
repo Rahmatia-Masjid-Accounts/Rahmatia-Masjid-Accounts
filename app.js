@@ -171,20 +171,6 @@ function updateAdminUI() {
 }
 
 // ========================================
-// LOGIN — IMPROVED ERROR HANDLING
-// ========================================
-
-$("loginForm")?.addEventListener("submit", async event => {
-  event.preventDefault();
-
-  const email = $("loginEmail")?.value.trim();
-  const password = $("loginPassword")?.value;
-
-  if (!email || !password) {
-    showMessage("ইমেইল ও পাসওয়ার্ড প্রদান করুন।");
-    return;
-  }
-// ========================================
 // LOGIN — CORRECTED
 // ========================================
 
