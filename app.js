@@ -171,7 +171,7 @@ function updateAdminUI() {
 }
 
 // ========================================
-// LOGIN
+// LOGIN — IMPROVED ERROR HANDLING
 // ========================================
 
 $("loginForm")?.addEventListener("submit", async event => {
@@ -189,16 +189,44 @@ $("loginForm")?.addEventListener("submit", async event => {
     await signInWithEmailAndPassword(auth, email, password);
 
     $("loginDialog")?.close?.();
-
-    if ($("loginDialog") && typeof $("loginDialog").close !== "function") {
-      setHidden($("loginDialog"), true);
-    }
-
     $("loginForm").reset();
 
   } catch (error) {
-    console.error(error);
-    showMessage("লগইন করা যায়নি। ইমেইল ও পাসওয়ার্ড যাচাই করুন।");
+    console.error("Firebase Login Error:", error.code, error.message);
+
+    const errors = {
+      "auth/invalid-credential":
+        "ইমেইল অথবা পাসওয়ার্ড ভুল।",
+
+      "auth/user-not-found":
+        "এই ইমেইলে কোনো অ্যাকাউন্ট পাওয়া যায়নি।",
+
+      "auth/wrong-password":
+        "পাসওয়ার্ড সঠিক নয়।",
+
+      "auth/invalid-email":
+        "ইমেইল ঠিকানাটি সঠিক নয়।",
+
+      "auth/user-disabled":
+        "এই অ্যাকাউন্টটি নিষ্ক্রিয় করা হয়েছে।",
+
+      "auth/too-many-requests":
+        "অনেকবার চেষ্টা করা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।",
+
+      "auth/network-request-failed":
+        "ইন্টারনেট সংযোগ পরীক্ষা করুন।",
+
+      "auth/operation-not-allowed":
+        "Firebase-এ Email/Password Authentication চালু নেই।",
+
+      "auth/invalid-api-key":
+        "Firebase API Key সঠিক নয়।"
+    };
+
+    showMessage(
+      errors[error.code] ||
+      `লগইন সমস্যা: ${error.code || error.message}`
+    );
   }
 });
 
