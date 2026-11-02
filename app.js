@@ -192,7 +192,14 @@ $("loginForm")?.addEventListener("submit", async event => {
     $("loginForm").reset();
 
   } catch (error) {
-    console.error("Firebase Login Error:", error.code, error.message);
+  console.error("LOGIN ERROR:", error);
+
+  showMessage(
+    "Login Error Code: " + error.code +
+    "\nবিস্তারিত: " + error.message
+  );
+}
+});
 
     const errors = {
       "auth/invalid-credential":
