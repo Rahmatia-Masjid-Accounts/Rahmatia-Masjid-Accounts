@@ -111,22 +111,44 @@
       </div>
 
 
-      <!-- Summary Cards -->
-      <div class="summary-grid">
+<!-- Summary Cards -->
+<div class="summary-grid">
 
-        <article class="summary-card income-card">
-          <div class="summary-top">
-            <span class="summary-icon" aria-hidden="true">↙</span>
-            <span class="summary-label">মোট আয়</span>
-          </div>
+  <!-- Total Income -->
+  <article class="summary-card income-card">
+    <div class="summary-top">
+      <span class="summary-icon">↙</span>
+      <span class="summary-label">মোট আয়</span>
+    </div>
+    <strong id="totalIncome">৳ ০</strong>
+    <p>সর্বমোট জমা ও অনুদান</p>
+  </article>
 
-          <strong id="totalIncome">৳ ০</strong>
-          <p>সর্বমোট জমা ও অনুদান</p>
-        </article>
+  <!-- Total Expense -->
+  <article class="summary-card expense-card">
+    <div class="summary-top">
+      <span class="summary-icon">↗</span>
+      <span class="summary-label">মোট ব্যয়</span>
+    </div>
+    <strong id="totalExpense">৳ ০</strong>
+    <p>সর্বমোট খরচ</p>
+  </article>
+
+  <!-- Balance -->
+  <article class="summary-card balance-card">
+    <div class="summary-top">
+      <span class="summary-icon">৳</span>
+      <span class="summary-label">অবশিষ্ট ব্যালেন্স</span>
+    </div>
+    <strong id="balance">৳ ০</strong>
+    <p>মোট আয় থেকে মোট ব্যয় বাদ</p>
+  </article>
+
+</div>
+
 <!-- Income Category Summary -->
 <div class="income-category-summary">
 
-  <!-- রশিদ বাবদ -->
   <details class="income-detail">
     <summary>
       <span class="income-detail-name">রশিদ বাবদ</span>
@@ -138,7 +160,6 @@
     </div>
   </details>
 
-  <!-- গ্রাম কালেকশন -->
   <details class="income-detail">
     <summary>
       <span class="income-detail-name">গ্রাম কালেকশন</span>
@@ -150,7 +171,6 @@
     </div>
   </details>
 
-  <!-- অন্যান্য কালেকশন -->
   <details class="income-detail">
     <summary>
       <span class="income-detail-name">অন্যান্য কালেকশন</span>
