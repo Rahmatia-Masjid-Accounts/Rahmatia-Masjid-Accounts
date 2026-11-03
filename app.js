@@ -198,27 +198,29 @@ function updateAdminUI() {
   const panel = $("adminPanel");
   const form = $("transactionForm");
 
-  setHidden(panel, !isAdmin);
+  console.log("IS ADMIN:", isAdmin);
+  console.log("PANEL FOUND:", !!panel);
+  console.log("FORM FOUND:", !!form);
+
+  if (panel) {
+    panel.hidden = false;
+    panel.classList.remove("hidden");
+    panel.style.display = isAdmin ? "block" : "none";
+  }
 
   setHidden($("adminLoginBtn"), isAdmin);
   setHidden($("logoutBtn"), !isAdmin);
-
   setHidden($("incomeActionHeader"), !isAdmin);
   setHidden($("expenseActionHeader"), !isAdmin);
 
-  console.log("ADMIN STATUS:", isAdmin);
-  console.log("ADMIN PANEL:", panel);
-  console.log("TRANSACTION FORM:", form);
-
-  if (isAdmin && !form) {
-    setStatus("অ্যাডমিন অনুমোদিত, কিন্তু HTML-এ ফর্ম পাওয়া যায়নি।", true);
-  } else if (isAdmin) {
-    setStatus("অ্যাডমিন অনুমোদিত। ফর্ম প্রদর্শনের চেষ্টা চলছে।");
-  }
-
   renderTransactions();
-}
 
+  if (isAdmin) {
+    setStatus("অ্যাডমিন প্যানেল চালু হয়েছে।");
+  } else {
+    setStatus("অ্যাডমিন অনুমোদনের অপেক্ষায়।");
+  }
+}
 // ========================================
 // 7. LOGIN
 // ========================================
