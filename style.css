@@ -1304,3 +1304,346 @@ td.amount-column {
     font-size: 11px;
   }
 }
+/* =========================================
+   MOBILE RESPONSIVE FIX
+   Rahmatia Masjid Accounts
+   ========================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
+}
+
+.container {
+  width: min(1120px, calc(100% - 32px));
+}
+
+/* SUMMARY CARDS */
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.summary-card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.income-category-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.income-detail {
+  min-width: 0;
+}
+
+/* TABLE SAFETY */
+
+.table-wrap {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-wrap table {
+  width: 100%;
+}
+
+/* HEADER */
+
+.header-inner {
+  flex-wrap: wrap;
+}
+
+.brand {
+  min-width: 0;
+}
+
+/* FORM */
+
+.form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.form-grid > label {
+  min-width: 0;
+}
+
+/* TABLET */
+
+@media (max-width: 850px) {
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .balance-card {
+    grid-column: 1 / -1;
+  }
+
+  .income-category-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+/* MOBILE */
+
+@media (max-width: 640px) {
+
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    width: calc(100% - 24px);
+  }
+
+  .header-inner {
+    min-height: auto;
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .brand strong {
+    font-size: 15px;
+  }
+
+  .brand span {
+    font-size: 7px;
+  }
+
+  .header-inner > .btn {
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+
+  .hero-content {
+    padding-top: 35px;
+    padding-bottom: 35px;
+  }
+
+  .hero h1 {
+    font-size: clamp(25px, 7vw, 34px);
+    overflow-wrap: anywhere;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+  }
+
+  .dashboard {
+    padding-top: 25px;
+    padding-bottom: 32px;
+  }
+
+  .section-heading,
+  .panel-heading {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .section-heading h2,
+  .panel-heading h2 {
+    font-size: 21px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+
+  .balance-card {
+    grid-column: auto;
+  }
+
+  .summary-card {
+    padding: 17px;
+  }
+
+  .summary-card > strong {
+    font-size: 25px;
+  }
+
+  .income-category-summary {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .income-detail summary {
+    padding: 12px;
+  }
+
+  .panel {
+    padding: 15px 12px;
+    margin-top: 17px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 13px;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .filter-bar > select {
+    width: 100%;
+  }
+
+  .search-box {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .ledger-section {
+    padding: 11px;
+  }
+
+  .ledger-subheading h3 {
+    font-size: 17px;
+  }
+
+  /* Ledger table becomes mobile cards */
+
+  .ledger-section .table-wrap {
+    overflow: visible;
+    border: none;
+  }
+
+  .ledger-section table {
+    min-width: 0;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+  }
+
+  .ledger-section thead {
+    display: none;
+  }
+
+  .ledger-section tbody,
+  .ledger-section tr {
+    display: block;
+    width: 100%;
+  }
+
+  .ledger-section tbody tr {
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+  }
+
+  .ledger-section tbody td {
+    display: grid;
+    grid-template-columns: 85px minmax(0, 1fr);
+    gap: 8px;
+    width: 100%;
+    padding: 8px 3px;
+    border-top: none;
+    border-bottom: 1px solid #e9eef5;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .ledger-section tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .ledger-section tbody td::before {
+    content: attr(data-label);
+    color: #64748b;
+    font-weight: 700;
+  }
+
+  .ledger-section tbody td[colspan] {
+    display: block;
+    text-align: center;
+  }
+
+  .ledger-section tbody td[colspan]::before {
+    content: none;
+  }
+
+  .ledger-section td.amount-column {
+    text-align: left;
+  }
+
+  .delete-btn {
+    justify-self: start;
+  }
+
+  .footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .login-form {
+    padding: 25px 18px;
+  }
+
+}
+
+/* SMALL MOBILE */
+
+@media (max-width: 380px) {
+
+  .container {
+    width: calc(100% - 18px);
+  }
+
+  .brand strong {
+    font-size: 13px;
+  }
+
+  .header-inner > .btn {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+
+  .summary-card {
+    padding: 14px;
+  }
+
+  .ledger-section tbody td {
+    grid-template-columns: 72px minmax(0, 1fr);
+    font-size: 12px;
+  }
+
+  .rmc-timer {
+    gap: 5px;
+  }
+
+}
