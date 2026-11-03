@@ -45,17 +45,14 @@ let transactions = [];
 let unsubscribeTransactions = null;
 let authCheckVersion = 0;
 
-// পুরোনো ক্যাটাগরি রাখার চেষ্টা করা হয়েছে
+// নতুন তিনটি আয়ের উৎস
 const incomeCategories = [
-  "রশিদ বাবদ",
-  "বাজার/মাঠ/গ্রাম কালেকশন",
+  "রশিদ বাবদ কালেকশন",
   "গ্রাম কালেকশন",
-  "অনুদান",
-  "চাঁদা",
-  "অন্যান্য আয়",
-  "অন্যান্য"
+  "অন্যান্য কালেকশন"
 ];
 
+// ব্যয়ের বিভাগ
 const expenseCategories = [
   "মঞ্চ ও সাউন্ড",
   "খাবার",
@@ -126,7 +123,41 @@ function getAmount(item) {
 }
 
 // ========================================
-// 4. CATEGORY SELECT
+// 4. INCOME CATEGORY MAPPING
+// ========================================
+
+// পুরোনো ক্যাটাগরিগুলোকে নতুন তিনটি বিভাগে দেখানো হবে।
+// Firestore-এর পুরোনো ডেটা পরিবর্তন বা ডিলিট করা হবে না।
+
+function getIncomeDisplayCategory(item) {
+  const category = getCategory(item);
+
+  // রশিদ বাবদ
+  if (
+    [
+      "রশিদ বাবদ",
+      "রশিদ বাবদ কালেকশন"
+    ].includes(category)
+  ) {
+    return "রশিদ বাবদ কালেকশন";
+  }
+
+  // গ্রাম কালেকশন
+  if (
+    [
+      "গ্রাম কালেকশন",
+      "বাজার/মাঠ/গ্রাম কালেকশন"
+    ].includes(category)
+  ) {
+    return "গ্রাম কালেকশন";
+  }
+
+  // বাকি সব আয়
+  return "অন্যান্য কালেকশন";
+}
+
+// ========================================
+// 5. CATEGORY SELECT
 // ========================================
 
 function updateCategoryOptions() {
@@ -158,7 +189,7 @@ function updateCategoryOptions() {
 $("type")?.addEventListener("change", updateCategoryOptions);
 
 // ========================================
-// 5. ADMIN VERIFICATION
+// 6. ADMIN VERIFICATION
 // ========================================
 
 async function checkAdmin(user) {
@@ -191,8 +222,9 @@ async function checkAdmin(user) {
 }
 
 // ========================================
-// 6. ADMIN UI
+// 7. ADMIN UI
 // ========================================
+
 function updateAdminUI() {
   setHidden($("adminPanel"), !isAdmin);
   setHidden($("adminLoginBtn"), isAdmin);
@@ -203,9 +235,9 @@ function updateAdminUI() {
 
   renderTransactions();
 }
- 
+
 // ========================================
-// 7. LOGIN
+// 8. LOGIN
 // ========================================
 
 $("loginForm")?.addEventListener("submit", async event => {
@@ -294,7 +326,7 @@ $("loginForm")?.addEventListener("submit", async event => {
 });
 
 // ========================================
-// 8. LOGOUT
+// 9. LOGOUT
 // ========================================
 
 $("logoutBtn")?.addEventListener("click", async () => {
@@ -313,7 +345,7 @@ $("logoutBtn")?.addEventListener("click", async () => {
 });
 
 // ========================================
-// 9. LOAD TRANSACTIONS
+// 10. LOAD TRANSACTIONS
 // ========================================
 
 function loadTransactions() {
@@ -408,7 +440,7 @@ function loadTransactions() {
 }
 
 // ========================================
-// 10. FINANCIAL TOTALS
+// 11. FINANCIAL TOTALS
 // ========================================
 
 function renderTotals() {
@@ -444,23 +476,25 @@ function renderTotals() {
     $("balance").textContent = money(balance);
   }
 
-  // রশিদ বাবদ
-  const receipt = incomeTransactions
-    .filter(item => getCategory(item) === "রশিদ বাবদ")
-    .reduce((sum, item) => sum + getAmount(item), 0);
+  // তিনটি নতুন আয়ের বিভাগের মোট
 
-  // গ্রাম কালেকশন
-  const village = incomeTransactions
+  const receipt = incomeTransactions
     .filter(item =>
-      [
-        "গ্রাম কালেকশন",
-        "বাজার/মাঠ/গ্রাম কালেকশন"
-      ].includes(getCategory(item))
+      getIncomeDisplayCategory(item) === "রশিদ বাবদ কালেকশন"
     )
     .reduce((sum, item) => sum + getAmount(item), 0);
 
-  // অন্যান্য আয় ও অনুদানসহ বাকি আয়
-  const other = income - receipt - village;
+  const village = incomeTransactions
+    .filter(item =>
+      getIncomeDisplayCategory(item) === "গ্রাম কালেকশন"
+    )
+    .reduce((sum, item) => sum + getAmount(item), 0);
+
+  const other = incomeTransactions
+    .filter(item =>
+      getIncomeDisplayCategory(item) === "অন্যান্য কালেকশন"
+    )
+    .reduce((sum, item) => sum + getAmount(item), 0);
 
   if ($("receiptIncome")) {
     $("receiptIncome").textContent = money(receipt);
@@ -486,7 +520,7 @@ function renderTotals() {
 }
 
 // ========================================
-// 11. SEARCH AND FILTER
+// 12. SEARCH AND FILTER
 // ========================================
 
 function getFilteredTransactions() {
@@ -506,7 +540,10 @@ function getFilteredTransactions() {
       item.description,
       item.category,
       item.date,
-      item.amount
+      item.amount,
+      item.type === "income"
+        ? getIncomeDisplayCategory(item)
+        : getCategory(item)
     ].join(" ").toLowerCase();
 
     return matchesType && searchable.includes(search);
@@ -524,7 +561,7 @@ $("filterType")?.addEventListener(
 );
 
 // ========================================
-// 12. REFRESH
+// 13. REFRESH
 // ========================================
 
 $("refreshBtn")?.addEventListener("click", () => {
@@ -532,7 +569,7 @@ $("refreshBtn")?.addEventListener("click", () => {
 });
 
 // ========================================
-// 13. RENDER TRANSACTIONS
+// 14. RENDER TRANSACTIONS
 // ========================================
 
 function renderTransactions() {
@@ -556,27 +593,14 @@ function renderTransactions() {
 
   // --------------------------------------
   // INCOME LEDGER
+  // শুধু তিনটি বিভাগ দেখাবে
   // --------------------------------------
 
   incomeContainer.innerHTML = "";
 
-  // পুরোনো বা নতুন অজানা ক্যাটাগরিও দেখানো হবে
-  const existingCategories = [
-    ...new Set(
-      incomeTransactions.map(item => getCategory(item))
-    )
-  ];
-
-  const allIncomeCategories = [
-    ...new Set([
-      ...incomeCategories,
-      ...existingCategories
-    ])
-  ];
-
-  allIncomeCategories.forEach(category => {
+  incomeCategories.forEach(category => {
     const items = incomeTransactions.filter(
-      item => getCategory(item) === category
+      item => getIncomeDisplayCategory(item) === category
     );
 
     const total = items.reduce(
@@ -706,7 +730,7 @@ function renderTransactions() {
 }
 
 // ========================================
-// 14. ADD TRANSACTION
+// 15. ADD TRANSACTION
 // ========================================
 
 $("transactionForm")?.addEventListener(
@@ -799,7 +823,7 @@ $("transactionForm")?.addEventListener(
 );
 
 // ========================================
-// 15. DELETE TRANSACTION
+// 16. DELETE TRANSACTION
 // ========================================
 
 document.addEventListener("click", async event => {
@@ -840,7 +864,7 @@ document.addEventListener("click", async event => {
 });
 
 // ========================================
-// 16. AUTH STATE
+// 17. AUTH STATE
 // ========================================
 
 onAuthStateChanged(auth, async user => {
@@ -854,7 +878,7 @@ onAuthStateChanged(auth, async user => {
 
     const authorized = await checkAdmin(user);
 
-    // আগের Auth check-এর ফলাফল যেন নতুন state পরিবর্তন না করে
+    // পুরোনো Auth check-এর ফলাফল উপেক্ষা
     if (currentCheck !== authCheckVersion) return;
 
     if (authorized) {
@@ -885,12 +909,12 @@ onAuthStateChanged(auth, async user => {
 });
 
 // ========================================
-// 17. INITIALIZATION
+// 18. INITIALIZATION
 // ========================================
 
 updateCategoryOptions();
 
-// Public ledger: লগইন ছাড়াই হিসাব দেখা যাবে
+// লগইন ছাড়াই হিসাব দেখা যাবে
 loadTransactions();
 
 console.log("Rahmatia Masjid Accounts initialized.");
