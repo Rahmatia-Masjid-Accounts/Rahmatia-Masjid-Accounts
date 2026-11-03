@@ -123,43 +123,46 @@
           <strong id="totalIncome">৳ ০</strong>
           <p>সর্বমোট জমা ও অনুদান</p>
         </article>
-        <!-- Income Category Summary -->
-        <div class="income-category-summary">
-          <div>
-            <span>রশিদ বাবদ</span>
-            <strong id="receiptIncome">৳ ০</strong>
-          </div>
-          <div>
-            <span>গ্রাম কালেকশন</span>
-            <strong id="villageIncome">৳ ০</strong>
-          </div>
-          <div>
-            <span>অন্যান্য আয়</span>
-            <strong id="otherIncome">৳ ০</strong>
-          </div>
-        </div>
+<!-- Income Category Summary -->
+<div class="income-category-summary">
 
-        <article class="summary-card expense-card">
-          <div class="summary-top">
-            <span class="summary-icon" aria-hidden="true">↗</span>
-            <span class="summary-label">মোট ব্যয়</span>
-          </div>
+  <!-- রশিদ বাবদ -->
+  <details class="income-detail">
+    <summary>
+      <span class="income-detail-name">রশিদ বাবদ</span>
+      <strong id="receiptIncome">৳ ০</strong>
+      <span class="detail-toggle">বিস্তারিত ▼</span>
+    </summary>
+    <div id="receiptIncomeDetails" class="income-detail-content">
+      <p class="detail-empty">তথ্য লোড হচ্ছে...</p>
+    </div>
+  </details>
 
-          <strong id="totalExpense">৳ ০</strong>
-          <p>সর্বমোট খরচ</p>
-        </article>
+  <!-- গ্রাম কালেকশন -->
+  <details class="income-detail">
+    <summary>
+      <span class="income-detail-name">গ্রাম কালেকশন</span>
+      <strong id="villageIncome">৳ ০</strong>
+      <span class="detail-toggle">বিস্তারিত ▼</span>
+    </summary>
+    <div id="villageIncomeDetails" class="income-detail-content">
+      <p class="detail-empty">তথ্য লোড হচ্ছে...</p>
+    </div>
+  </details>
 
-        <article class="summary-card balance-card">
-          <div class="summary-top">
-            <span class="summary-icon" aria-hidden="true">৳</span>
-            <span class="summary-label">বর্তমান ব্যালেন্স</span>
-          </div>
+  <!-- অন্যান্য কালেকশন -->
+  <details class="income-detail">
+    <summary>
+      <span class="income-detail-name">অন্যান্য কালেকশন</span>
+      <strong id="otherIncome">৳ ০</strong>
+      <span class="detail-toggle">বিস্তারিত ▼</span>
+    </summary>
+    <div id="otherIncomeDetails" class="income-detail-content">
+      <p class="detail-empty">তথ্য লোড হচ্ছে...</p>
+    </div>
+  </details>
 
-          <strong id="balance">৳ ০</strong>
-          <p id="balanceNote">আয় থেকে ব্যয় বাদ দিয়ে</p>
-        </article>
-
-      </div>
+</div>
 
 
       <!-- Status -->
