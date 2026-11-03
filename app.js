@@ -566,11 +566,13 @@ function renderTotals() {
       `মোট আয়: ${money(income)}`;
   }
 
-  if ($("expenseLedgerTotal")) {
-  $("expenseLedgerTotal").textContent =
-    `মোট ব্যয়: ${money(expense)}`;
+if ($("expenseLedgerTotal")) {
+    $("expenseLedgerTotal").textContent =
+      `মোট ব্যয়: ${money(expense)}`;
+  }
 }
 
+// তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
 // তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
 renderIncomeDetails(
   "receiptIncomeDetails",
