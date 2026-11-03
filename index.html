@@ -693,50 +693,47 @@
     })();
   </script>
 
+<!-- ================= LOGIN DIALOG CONTROLS ================= -->
+<script>
+  (function () {
+    const adminButton = document.getElementById("adminLoginBtn");
+    const dialog = document.getElementById("loginDialog");
+    const closeButton = document.getElementById("closeLoginBtn");
 
-  <!-- ================= LOGIN DIALOG CONTROLS ================= -->
-  <!-- Authentication and admin permission remain handled by app.js -->
-  <script>
-    (function () {
-      const adminButton = document.getElementById("adminLoginBtn");
-      const dialog = document.getElementById("loginDialog");
-      const closeButton = document.getElementById("closeLoginBtn");
+    if (adminButton && dialog) {
+      adminButton.addEventListener("click", function () {
+        if (dialog.open) return;
 
-      if (adminButton && dialog) {
-        adminButton.addEventListener("click", function () {
-          if (dialog.open) return;
+        if (typeof dialog.showModal === "function") {
+          dialog.showModal();
+        } else {
+          dialog.setAttribute("open", "");
+        }
+      });
+    }
 
-          if (typeof dialog.showModal === "function") {
-            dialog.showModal();
-          } else {
-            dialog.setAttribute("open", "");
-          }
-        });
-      }
+    if (closeButton && dialog) {
+      closeButton.addEventListener("click", function () {
+        if (typeof dialog.close === "function") {
+          dialog.close();
+        } else {
+          dialog.removeAttribute("open");
+        }
+      });
+    }
 
-      if (closeButton && dialog) {
-        closeButton.addEventListener("click", function () {
-          if (typeof dialog.close === "function") {
-            dialog.close();
-          } else {
-            dialog.removeAttribute("open");
-          }
-        });
-      }
+    if (dialog) {
+      dialog.addEventListener("click", function (event) {
+        if (event.target === dialog && typeof dialog.close === "function") {
+          dialog.close();
+        }
+      });
+    }
+  })();
+</script>
 
-      if (dialog) {
-        dialog.addEventListener("click", function (event) {
-          if (event.target === dialog && typeof dialog.close === "function") {
-            dialog.close();
-          }
-        });
-      }
-    })();
-  </script>
-
+<!-- Main Firebase application -->
+<script type="module" src="app.js?v=7"></script>
 
 </body>
-  <!-- Main Firebase application -->
- <script type="module" src="app.js?v=6"></script>
-
 </html>
