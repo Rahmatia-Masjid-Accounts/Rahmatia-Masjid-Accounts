@@ -193,34 +193,17 @@ async function checkAdmin(user) {
 // ========================================
 // 6. ADMIN UI
 // ========================================
-
 function updateAdminUI() {
-  const panel = $("adminPanel");
-  const form = $("transactionForm");
-
-  console.log("IS ADMIN:", isAdmin);
-  console.log("PANEL FOUND:", !!panel);
-  console.log("FORM FOUND:", !!form);
-
-  if (panel) {
-    panel.hidden = false;
-    panel.classList.remove("hidden");
-    panel.style.display = isAdmin ? "block" : "none";
-  }
-
+  setHidden($("adminPanel"), !isAdmin);
   setHidden($("adminLoginBtn"), isAdmin);
   setHidden($("logoutBtn"), !isAdmin);
+
   setHidden($("incomeActionHeader"), !isAdmin);
   setHidden($("expenseActionHeader"), !isAdmin);
 
   renderTransactions();
-
-  if (isAdmin) {
-    setStatus("অ্যাডমিন প্যানেল চালু হয়েছে।");
-  } else {
-    setStatus("অ্যাডমিন অনুমোদনের অপেক্ষায়।");
-  }
 }
+ 
 // ========================================
 // 7. LOGIN
 // ========================================
