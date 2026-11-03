@@ -569,6 +569,12 @@ function renderTotals() {
   if ($("expenseLedgerTotal")) {
     $("expenseLedgerTotal").textContent =
       `মোট ব্যয়: ${money(expense)}`;
+    // তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
+renderIncomeDetails("receiptIncomeDetails", "রশিদ বাবদ কালেকশন");
+
+renderIncomeDetails("villageIncomeDetails", "গ্রাম কালেকশন");
+
+renderIncomeDetails("otherIncomeDetails", "অন্যান্য কালেকশন");
   }
 }
 
