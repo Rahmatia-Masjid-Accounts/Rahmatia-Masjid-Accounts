@@ -438,7 +438,60 @@ function loadTransactions() {
     );
   }
 }
+// ========================================
+// INCOME OVERVIEW DROPDOWN DETAILS
+// ========================================
 
+function renderIncomeDetails(containerId, category) {
+  const container = $(containerId);
+
+  if (!container) return;
+
+  const items = transactions
+    .filter(item =>
+      item.type === "income" &&
+      getIncomeDisplayCategory(item) === category
+    )
+    .sort((a, b) =>
+      String(b.date || "").localeCompare(
+        String(a.date || "")
+      )
+    );
+
+  if (items.length === 0) {
+    container.innerHTML = `
+      <p class="detail-empty">
+        এই বিভাগে এখনো কোনো হিসাব নেই।
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = items.map(item => `
+    <div class="income-detail-row">
+
+      <div class="income-detail-info">
+
+        <strong>
+          ${escapeHTML(item.description || "বিবরণ নেই")}
+        </strong>
+
+        <small>
+          তারিখ: ${escapeHTML(item.date || "-")}
+          ${item.person
+            ? " | নাম: " + escapeHTML(item.person)
+            : ""}
+        </small>
+
+      </div>
+
+      <span class="income-detail-amount">
+        ${money(getAmount(item))}
+      </span>
+
+    </div>
+  `).join("");
+}
 // ========================================
 // 11. FINANCIAL TOTALS
 // ========================================
