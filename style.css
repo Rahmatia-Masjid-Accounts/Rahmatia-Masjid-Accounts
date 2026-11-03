@@ -1177,3 +1177,130 @@ td.amount-column {
   margin: 0;
   font-size: 16px;
 }
+/* =====================================
+   INCOME CATEGORY DROPDOWN
+===================================== */
+
+.income-category-summary {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+}
+
+.income-detail {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.income-detail summary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  cursor: pointer;
+  list-style: none;
+  flex-wrap: wrap;
+}
+
+.income-detail summary::-webkit-details-marker {
+  display: none;
+}
+
+.income-detail-name {
+  flex: 1;
+  min-width: 100px;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.income-detail summary strong {
+  color: #102b55;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.detail-toggle {
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.income-detail[open] .detail-toggle {
+  color: #64748b;
+}
+
+.income-detail-content {
+  padding: 12px 15px;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+}
+
+.income-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.income-detail-row:last-child {
+  border-bottom: none;
+}
+
+.income-detail-info {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.income-detail-info strong {
+  color: #334155;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.income-detail-info small {
+  color: #64748b;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.income-detail-amount {
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.detail-empty {
+  margin: 0;
+  padding: 8px 0;
+  color: #94a3b8;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .income-detail summary {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .income-detail-name {
+    font-size: 13px;
+  }
+
+  .income-detail summary strong {
+    font-size: 14px;
+  }
+
+  .detail-toggle {
+    font-size: 11px;
+  }
+}
