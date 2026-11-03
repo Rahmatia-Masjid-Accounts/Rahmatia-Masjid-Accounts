@@ -195,12 +195,26 @@ async function checkAdmin(user) {
 // ========================================
 
 function updateAdminUI() {
-  setHidden($("adminPanel"), !isAdmin);
+  const panel = $("adminPanel");
+  const form = $("transactionForm");
+
+  setHidden(panel, !isAdmin);
+
   setHidden($("adminLoginBtn"), isAdmin);
   setHidden($("logoutBtn"), !isAdmin);
 
   setHidden($("incomeActionHeader"), !isAdmin);
   setHidden($("expenseActionHeader"), !isAdmin);
+
+  console.log("ADMIN STATUS:", isAdmin);
+  console.log("ADMIN PANEL:", panel);
+  console.log("TRANSACTION FORM:", form);
+
+  if (isAdmin && !form) {
+    setStatus("অ্যাডমিন অনুমোদিত, কিন্তু HTML-এ ফর্ম পাওয়া যায়নি।", true);
+  } else if (isAdmin) {
+    setStatus("অ্যাডমিন অনুমোদিত। ফর্ম প্রদর্শনের চেষ্টা চলছে।");
+  }
 
   renderTransactions();
 }
