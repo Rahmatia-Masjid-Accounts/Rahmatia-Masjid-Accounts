@@ -382,30 +382,46 @@ function loadTransactions() {
       transactionsRef,
 
       snapshot => {
-        console.log(
-          "FIRESTORE SUCCESS:",
-          snapshot.size,
-          "documents"
-        );
+  console.log(
+    "FIRESTORE SUCCESS:",
+    snapshot.size,
+    "documents"
+  );
 
-        transactions = snapshot.docs.map(document => ({
-          id: document.id,
-          ...document.data()
-        }));
+  try {
+    transactions = snapshot.docs.map(document => ({
+      id: document.id,
+      ...document.data()
+    }));
 
-        transactions.sort((a, b) =>
-          String(b.date || "").localeCompare(
-            String(a.date || "")
-          )
-        );
+    transactions.sort((a, b) =>
+      String(b.date || "").localeCompare(
+        String(a.date || "")
+      )
+    );
 
-        renderTotals();
-        renderTransactions();
+    // আগে ডেটা আসার বিষয়টি নিশ্চিত করি
+    setStatus(
+      `Firebase থেকে ${transactions.length}টি হিসাব পাওয়া গেছে।`
+    );
 
-        setStatus(
-          `হিসাব সফলভাবে লোড হয়েছে। মোট ${transactions.length}টি এন্ট্রি।`
-        );
-      },
+    renderTotals();
+    renderTransactions();
+
+    setStatus(
+      `হিসাব সফলভাবে লোড হয়েছে। মোট ${transactions.length}টি এন্ট্রি।`
+    );
+
+  } catch (error) {
+    console.error("RENDER ERROR:", error);
+
+    setStatus(
+      "ডেটা এসেছে, কিন্তু প্রদর্শনে সমস্যা: " +
+      (error.message || error),
+      true
+    );
+  }
+},
 
       error => {
         console.error("FIRESTORE ERROR:", error);
