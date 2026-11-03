@@ -567,16 +567,25 @@ function renderTotals() {
   }
 
   if ($("expenseLedgerTotal")) {
-    $("expenseLedgerTotal").textContent =
-      `মোট ব্যয়: ${money(expense)}`;
-    // তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
-renderIncomeDetails("receiptIncomeDetails", "রশিদ বাবদ কালেকশন");
-
-renderIncomeDetails("villageIncomeDetails", "গ্রাম কালেকশন");
-
-renderIncomeDetails("otherIncomeDetails", "অন্যান্য কালেকশন");
-  }
+  $("expenseLedgerTotal").textContent =
+    `মোট ব্যয়: ${money(expense)}`;
 }
+
+// তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
+renderIncomeDetails(
+  "receiptIncomeDetails",
+  "রশিদ বাবদ কালেকশন"
+);
+
+renderIncomeDetails(
+  "villageIncomeDetails",
+  "গ্রাম কালেকশন"
+);
+
+renderIncomeDetails(
+  "otherIncomeDetails",
+  "অন্যান্য কালেকশন"
+);
 
 // ========================================
 // 12. SEARCH AND FILTER
@@ -694,11 +703,21 @@ function renderTransactions() {
               items.length
                 ? items.map(item => `
                   <tr>
-                    <td>${escapeHTML(item.date || "-")}</td>
-                    <td>${escapeHTML(item.description || "-")}</td>
-                    <td>${escapeHTML(item.person || "-")}</td>
-                    <td>${money(getAmount(item))}</td>
+  <td data-label="তারিখ">
+    ${escapeHTML(item.date || "-")}
+  </td>
 
+  <td data-label="বিবরণ">
+    ${escapeHTML(item.description || "-")}
+  </td>
+
+  <td data-label="নাম">
+    ${escapeHTML(item.person || "-")}
+  </td>
+
+  <td data-label="পরিমাণ">
+    ${money(getAmount(item))}
+  </td>
                     ${
                       isAdmin
                         ? `<td>
@@ -737,19 +756,25 @@ function renderTransactions() {
   expenseBody.innerHTML = expenseTransactions.length
     ? expenseTransactions.map(item => `
         <tr>
-          <td>${escapeHTML(item.date || "-")}</td>
+  <td data-label="তারিখ">
+    ${escapeHTML(item.date || "-")}
+  </td>
 
-          <td>
-            ${escapeHTML(item.description || "-")}
+  <td data-label="বিবরণ">
+    ${escapeHTML(item.description || "-")}
 
-            <small class="expense-category">
-              ${escapeHTML(getCategory(item))}
-            </small>
-          </td>
+    <small class="expense-category">
+      ${escapeHTML(getCategory(item))}
+    </small>
+  </td>
 
-          <td>${escapeHTML(item.person || "-")}</td>
+  <td data-label="নাম">
+    ${escapeHTML(item.person || "-")}
+  </td>
 
-          <td>${money(getAmount(item))}</td>
+  <td data-label="পরিমাণ">
+    ${money(getAmount(item))}
+  </td>
 
           ${
             isAdmin
