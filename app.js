@@ -525,6 +525,12 @@ function renderIncomeDetails(containerId, items) {
         ${money(getAmount(item))}
       </span>
 
+      ${isAdmin ? `<button
+        class="delete-btn income-detail-delete"
+        data-id="${escapeHTML(item.id)}"
+        type="button"
+        aria-label="এই হিসাব মুছুন">মুছুন</button>` : ""}
+
     </div>
   `).join("");
 }
@@ -591,6 +597,8 @@ function renderTotals() {
     (sum, item) => sum + getAmount(item), 0
   );
 
+  const expenseItems = expenseTransactions;
+
   if ($("receiptIncome")) {
     $("receiptIncome").textContent = money(receipt);
   }
@@ -627,6 +635,11 @@ if ($("expenseLedgerTotal")) {
   renderIncomeDetails(
     "otherIncomeDetails",
     otherItems
+  );
+
+  renderIncomeDetails(
+    "expenseSummaryDetails",
+    expenseItems
   );
 }
 
@@ -689,8 +702,12 @@ function renderTransactions() {
   const incomeContainer = $("incomeCategoryLedgers");
   const expenseBody = $("expenseTransactionList");
 
+  // The lower transaction ledger is intentionally removed.
+  // All transaction details and admin delete actions are shown in the summary dropdowns.
   if (!incomeContainer || !expenseBody) {
-    console.error("Ledger HTML elements not found.");
+    if ($("entryCount")) {
+      $("entryCount").textContent = `মোট ${filtered.length}টি এন্ট্রি`;
+    }
     return;
   }
 
