@@ -264,6 +264,23 @@ function updateAdminUI() {
 // 8. LOGIN
 // ========================================
 
+// অ্যাডমিন লগইন বাটনে চাপলে লগইন ফর্ম খুলবে।
+$("adminLoginBtn")?.addEventListener("click", () => {
+  const dialog = $("loginDialog");
+  if (!dialog) {
+    console.error("Login dialog not found in index.html");
+    return;
+  }
+  if (!dialog.open) dialog.showModal();
+});
+
+// লগইন ডায়ালগ বন্ধ করার বাটন।
+$("loginCloseBtn")?.addEventListener("click", () => {
+  $("loginDialog")?.close();
+});
+
+
+
 $("loginForm")?.addEventListener("submit", async event => {
   event.preventDefault();
 
