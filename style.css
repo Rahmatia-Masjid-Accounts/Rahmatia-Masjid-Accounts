@@ -1647,3 +1647,19 @@ button {
   }
 
 }
+
+
+/* ADMIN LOGIN BUTTON — MOBILE TAP SAFETY */
+.site-header {
+  position: relative;
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+#adminLoginBtn {
+  position: relative;
+  z-index: 10000;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(36, 89, 169, 0.2);
+}
