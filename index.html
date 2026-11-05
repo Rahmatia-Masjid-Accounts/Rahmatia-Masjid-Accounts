@@ -514,6 +514,29 @@
     </section>
   </main>
 
+
+  <!-- ================= ADMIN LOGIN DIALOG ================= -->
+  <dialog id="loginDialog" class="login-dialog" aria-labelledby="loginTitle">
+    <form id="loginForm" class="login-form">
+      <button class="dialog-close" id="loginCloseBtn" type="button" aria-label="বন্ধ করুন">×</button>
+      <div class="login-symbol" aria-hidden="true">🔐</div>
+      <h2 id="loginTitle">অ্যাডমিন লগইন</h2>
+      <p>হিসাব পরিচালনার জন্য অনুমোদিত অ্যাডমিন হিসেবে প্রবেশ করুন।</p>
+
+      <label for="loginEmail">ইমেইল ঠিকানা</label>
+      <input id="loginEmail" name="email" type="email" autocomplete="username"
+        placeholder="আপনার অ্যাডমিন ইমেইল" required>
+
+      <label for="loginPassword">পাসওয়ার্ড</label>
+      <input id="loginPassword" name="password" type="password"
+        autocomplete="current-password" placeholder="পাসওয়ার্ড লিখুন" required>
+
+      <p id="loginError" class="form-error" role="alert" aria-live="polite"></p>
+      <button id="loginSubmitBtn" class="btn btn-primary full-button" type="submit">লগইন করুন</button>
+      <p class="login-footnote">শুধুমাত্র অনুমোদিত অ্যাডমিনদের জন্য</p>
+    </form>
+  </dialog>
+
   <!-- ================= FOOTER ================= -->
   <footer class="site-footer">
     <div class="container footer-inner">
@@ -527,7 +550,7 @@
     <div class="footer-bottom">© ২০২৬ Rahmatia Masjid Accounts. সর্বস্বত্ব সংরক্ষিত।</div>
   </footer>
 
-  <script type="module" src="app.js?v=15"></script>
+  <script type="module" src="app.js?v=16"></script>
 
 </body>
 </html>
