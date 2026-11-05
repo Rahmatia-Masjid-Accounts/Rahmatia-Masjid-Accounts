@@ -4,16 +4,18 @@
    ========================================= */
 
 :root {
+  /* Royal Navy & Emerald — Light theme */
+  color-scheme: light;
   --navy: #102b55;
-  --navy-dark: #091b38;
-  --blue: #2459a9;
+  --navy-dark: #081f3d;
+  --blue: #087f5b;
   --red: #d83b48;
-  --green: #13855b;
-  --bg: #f4f7fc;
+  --green: #087f5b;
+  --bg: #f3f8f6;
   --surface: #ffffff;
-  --text: #19263b;
-  --muted: #718096;
-  --border: #e4eaf3;
+  --text: #192b28;
+  --muted: #687c76;
+  --border: #dce9e3;
   --radius: 18px;
   --shadow: 0 10px 35px rgba(16, 43, 85, 0.07);
 }
@@ -185,9 +187,9 @@ a {
   overflow: hidden;
   color: white;
   background:
-    radial-gradient(ellipse at 90% 15%, rgba(70, 116, 190, 0.38), transparent 36%),
-    radial-gradient(ellipse at 0% 100%, rgba(216, 59, 72, 0.18), transparent 35%),
-    linear-gradient(125deg, #091b38 0%, #102b55 60%, #1d4782 100%);
+    radial-gradient(ellipse at 90% 15%, rgba(8, 127, 91, 0.34), transparent 36%),
+    radial-gradient(ellipse at 0% 100%, rgba(8, 127, 91, 0.2), transparent 35%),
+    linear-gradient(125deg, #081f3d 0%, #102b55 58%, #087f5b 115%);
 }
 
 .hero::after {
@@ -1663,3 +1665,119 @@ button {
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(36, 89, 169, 0.2);
 }
+
+
+/* =========================================
+   ROYAL NAVY & EMERALD — DARK MODE
+   ========================================= */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 8px 12px;
+  color: var(--navy);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.theme-toggle:hover { border-color: var(--green); }
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+@media (max-width: 560px) {
+  .header-actions { gap: 6px; }
+  .header-actions .theme-toggle {
+    min-height: 36px;
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --navy: #dbeafe;
+  --navy-dark: #071526;
+  --blue: #34d399;
+  --green: #34d399;
+  --bg: #0b1722;
+  --surface: #132433;
+  --text: #e5f0ed;
+  --muted: #a1b5ae;
+  --border: #29413f;
+  --shadow: 0 10px 35px rgba(0, 0, 0, 0.22);
+}
+html[data-theme="dark"] body { background: var(--bg); color: var(--text); }
+html[data-theme="dark"] .site-header { background: #0d1d2b; border-color: var(--border); }
+html[data-theme="dark"] .brand strong,
+html[data-theme="dark"] .section-heading h2,
+html[data-theme="dark"] .panel-heading h2,
+html[data-theme="dark"] .summary-card > strong,
+html[data-theme="dark"] .empty-message strong,
+html[data-theme="dark"] .income-detail summary strong { color: #e5f0ed; }
+html[data-theme="dark"] .btn-light,
+html[data-theme="dark"] .btn-outline,
+html[data-theme="dark"] .theme-toggle {
+  color: #e5f0ed; background: #1b3445; border-color: #355366;
+}
+html[data-theme="dark"] .btn-light:hover,
+html[data-theme="dark"] .btn-outline:hover,
+html[data-theme="dark"] .theme-toggle:hover { background: #244456; }
+html[data-theme="dark"] .summary-card,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .income-detail,
+html[data-theme="dark"] .income-category-summary > div {
+  background: var(--surface); border-color: var(--border);
+}
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] .search-box {
+  color: var(--text); background: #0e1d29; border-color: #35505a;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder { color: #819891; }
+html[data-theme="dark"] .form-grid label,
+html[data-theme="dark"] .login-form label { color: #d1e2dc; }
+html[data-theme="dark"] thead { background: #1b3445; }
+html[data-theme="dark"] th { color: #b6ccc4; }
+html[data-theme="dark"] td { color: #d1e2dc; border-color: #29413f; }
+html[data-theme="dark"] tbody tr:hover { background: #1a3442; }
+html[data-theme="dark"] .table-wrap { border-color: var(--border); }
+html[data-theme="dark"] .type-badge.income { color: #6ee7b7; background: #123c34; }
+html[data-theme="dark"] .type-badge.expense { color: #fda4af; background: #48232d; }
+html[data-theme="dark"] .delete-btn { color: #fda4af; background: #48232d; border-color: #713641; }
+html[data-theme="dark"] .income-detail-content { background: #0e1d29; border-color: var(--border); }
+html[data-theme="dark"] .income-detail-name,
+html[data-theme="dark"] .income-detail-info strong { color: #e0eee9; }
+html[data-theme="dark"] .income-detail-info small,
+html[data-theme="dark"] .expense-category { color: #a1b5ae; }
+html[data-theme="dark"] .income-detail-row { border-color: var(--border); }
+html[data-theme="dark"] .income-detail-amount { color: #6ee7b7; }
+html[data-theme="dark"] .status-message { color: #c4d8d0; background: #1b3445; border-color: #355366; }
+html[data-theme="dark"] .status-message.success { color: #86efac; background: #123c34; border-color: #24624f; }
+html[data-theme="dark"] .status-message.error { color: #fda4af; background: #48232d; border-color: #713641; }
+html[data-theme="dark"] .transparency-note { background: linear-gradient(110deg, #142d3b, #18352f); border-color: var(--border); }
+html[data-theme="dark"] .transparency-note h3 { color: #e5f0ed; }
+html[data-theme="dark"] .transparency-note p { color: #b1c5bd; }
+html[data-theme="dark"] .note-icon { color: #6ee7b7; background: #1b3445; }
+html[data-theme="dark"] .count-badge { color: #6ee7b7; background: #123c34; }
+html[data-theme="dark"] .login-dialog { color: var(--text); background: #132433; }
+html[data-theme="dark"] .login-form h2 { color: #e5f0ed; }
+html[data-theme="dark"] .dialog-close { color: #d1e2dc; background: #29413f; }
+html[data-theme="dark"] .login-symbol { background: #123c34; }
+html[data-theme="dark"] #rm-countdown {
+  --rmc-text: #e5f0ed; --rmc-muted: #a1b5ae; --rmc-border: #29413f;
+  background: #132433; color: #e5f0ed;
+}
+html[data-theme="dark"] #rm-countdown .rmc-icon { background: #123c34; color: #6ee7b7; }
+html[data-theme="dark"] #rm-countdown .rmc-unit { background: #0e1d29; border-color: #29413f; }
+html[data-theme="dark"] #rm-countdown .rmc-unit strong { color: #6ee7b7; }
+html[data-theme="dark"] #rm-countdown .rmc-footer { color: #86efac; background: #123c34; }
+html[data-theme="dark"] .ledger-section tbody tr { background: #132433; border-color: var(--border); }
+html[data-theme="dark"] .ledger-section tbody td { border-color: var(--border); }
+html[data-theme="dark"] .ledger-section tbody td::before { color: #a1b5ae; }
