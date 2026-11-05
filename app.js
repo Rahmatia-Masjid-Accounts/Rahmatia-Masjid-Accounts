@@ -482,21 +482,17 @@ function loadTransactions() {
 // INCOME OVERVIEW DROPDOWN DETAILS
 // ========================================
 
-function renderIncomeDetails(containerId, category) {
+function renderIncomeDetails(containerId, items) {
   const container = $(containerId);
 
   if (!container) return;
 
-  const items = transactions
-    .filter(item =>
-      item.type === "income" &&
-      getIncomeDisplayCategory(item) === category
+  // মোট হিসাবের জন্য ব্যবহৃত একই transaction list থেকেই বিস্তারিত দেখানো হবে।
+  items = [...items].sort((a, b) =>
+    String(b.date || "").localeCompare(
+      String(a.date || "")
     )
-    .sort((a, b) =>
-      String(b.date || "").localeCompare(
-        String(a.date || "")
-      )
-    );
+  );
 
   if (items.length === 0) {
     container.innerHTML = `
@@ -569,25 +565,31 @@ function renderTotals() {
     $("balance").textContent = money(balance);
   }
 
-  // তিনটি নতুন আয়ের বিভাগের মোট
+  // তিনটি আয়ের বিভাগের জন্য একবারই তালিকা তৈরি করা হচ্ছে।
+  // একই তালিকা থেকে মোট টাকা এবং বিস্তারিত—দুটিই দেখানো হবে।
+  const receiptItems = incomeTransactions.filter(
+    item => getIncomeDisplayCategory(item) === "রশিদ বাবদ কালেকশন"
+  );
 
-  const receipt = incomeTransactions
-    .filter(item =>
-      getIncomeDisplayCategory(item) === "রশিদ বাবদ কালেকশন"
-    )
-    .reduce((sum, item) => sum + getAmount(item), 0);
+  const villageItems = incomeTransactions.filter(
+    item => getIncomeDisplayCategory(item) === "গ্রাম কালেকশন"
+  );
 
-  const village = incomeTransactions
-    .filter(item =>
-      getIncomeDisplayCategory(item) === "গ্রাম কালেকশন"
-    )
-    .reduce((sum, item) => sum + getAmount(item), 0);
+  const otherItems = incomeTransactions.filter(
+    item => getIncomeDisplayCategory(item) === "অন্যান্য কালেকশন"
+  );
 
-  const other = incomeTransactions
-    .filter(item =>
-      getIncomeDisplayCategory(item) === "অন্যান্য কালেকশন"
-    )
-    .reduce((sum, item) => sum + getAmount(item), 0);
+  const receipt = receiptItems.reduce(
+    (sum, item) => sum + getAmount(item), 0
+  );
+
+  const village = villageItems.reduce(
+    (sum, item) => sum + getAmount(item), 0
+  );
+
+  const other = otherItems.reduce(
+    (sum, item) => sum + getAmount(item), 0
+  );
 
   if ($("receiptIncome")) {
     $("receiptIncome").textContent = money(receipt);
@@ -614,17 +616,17 @@ if ($("expenseLedgerTotal")) {
   // Firebase থেকে প্রতিবার নতুন হিসাব এলে বিস্তারিত তালিকাও রিফ্রেশ হবে।
   renderIncomeDetails(
     "receiptIncomeDetails",
-    "রশিদ বাবদ কালেকশন"
+    receiptItems
   );
 
   renderIncomeDetails(
     "villageIncomeDetails",
-    "গ্রাম কালেকশন"
+    villageItems
   );
 
   renderIncomeDetails(
     "otherIncomeDetails",
-    "অন্যান্য কালেকশন"
+    otherItems
   );
 }
 
