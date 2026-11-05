@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#102b55">
+  <meta name="theme-color" content="#102b55" id="themeColorMeta">
 
   <meta name="description"
     content="দক্ষিণ কূর্শা ডাঙ্গাপাড়া রহমাতিয়া জামে মসজিদের ৪র্থ ঐতিহাসিক তাফসিরুল কুরআন মাহফিল ২০২৬-এর আয়-ব্যয়ের স্বচ্ছ হিসাব।">
@@ -48,13 +48,20 @@
         </div>
       </a>
 
-      <button
-        id="adminLoginBtn"
-        class="btn btn-light"
-        type="button"
-        onclick="document.getElementById('loginDialog').showModal()">
-        🔐 অ্যাডমিন লগইন
-      </button>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="theme-toggle" type="button"
+          aria-label="ডার্ক মোড চালু করুন" title="থিম পরিবর্তন করুন">
+          <span id="themeToggleIcon" aria-hidden="true">🌙</span>
+          <span id="themeToggleText">ডার্ক</span>
+        </button>
+        <button
+          id="adminLoginBtn"
+          class="btn btn-light"
+          type="button"
+          onclick="document.getElementById('loginDialog').showModal()">
+          🔐 অ্যাডমিন লগইন
+        </button>
+      </div>
 
     </div>
   </header>
@@ -551,6 +558,36 @@
     <div class="footer-bottom">© ২০২৬ Rahmatia Masjid Accounts. সর্বস্বত্ব সংরক্ষিত।</div>
   </footer>
 
+  <!-- Theme preference: saved on this device only; does not affect account data. -->
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const button = document.getElementById("themeToggleBtn");
+      const icon = document.getElementById("themeToggleIcon");
+      const label = document.getElementById("themeToggleText");
+      const meta = document.getElementById("themeColorMeta");
+      if (!button) return;
+
+      let saved = "light";
+      try { saved = localStorage.getItem("rm-theme") || "light"; } catch (_) {}
+
+      function applyTheme(theme) {
+        const dark = theme === "dark";
+        root.setAttribute("data-theme", dark ? "dark" : "light");
+        icon.textContent = dark ? "☀️" : "🌙";
+        label.textContent = dark ? "লাইট" : "ডার্ক";
+        button.setAttribute("aria-label", dark ? "লাইট মোড চালু করুন" : "ডার্ক মোড চালু করুন");
+        if (meta) meta.setAttribute("content", dark ? "#0b1722" : "#102b55");
+      }
+
+      applyTheme(saved === "dark" ? "dark" : "light");
+      button.addEventListener("click", function () {
+        const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        applyTheme(next);
+        try { localStorage.setItem("rm-theme", next); } catch (_) {}
+      });
+    })();
+  </script>
   <script type="module" src="app.js?v=17"></script>
 
 </body>
