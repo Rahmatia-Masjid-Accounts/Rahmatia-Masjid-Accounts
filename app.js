@@ -110,10 +110,28 @@ function setStatus(message, error = false) {
 }
 
 function getCategory(item) {
-  return String(
-    item.category ||
-    (item.type === "income" ? "অন্যান্য" : "অন্যান্য ব্যয়")
-  );
+  // পুরোনো/ভিন্ন নামে সংরক্ষিত category field-ও পড়বে।
+  const rawCategory =
+    item.category ??
+    item.categoryName ??
+    item.incomeCategory ??
+    item.expenseCategory ??
+    item.division ??
+    "";
+
+  const category = String(rawCategory).trim().normalize("NFC");
+
+  // ফাঁকা বা placeholder বিভাগকে নির্দিষ্ট fallback-এ দেখানো হবে।
+  if (
+    !category ||
+    ["বিভাগ নেই", "নেই", "undefined", "null"].includes(category.toLowerCase())
+  ) {
+    return item.type === "income"
+      ? "অন্যান্য"
+      : "অন্যান্য ব্যয়";
+  }
+
+  return category;
 }
 
 function getAmount(item) {
@@ -130,29 +148,35 @@ function getAmount(item) {
 // Firestore-এর পুরোনো ডেটা পরিবর্তন বা ডিলিট করা হবে না।
 
 function getIncomeDisplayCategory(item) {
-  const category = getCategory(item);
+  const category = getCategory(item).trim().normalize("NFC");
 
-  // রশিদ বাবদ
+  // রশিদ বাবদ: নতুন ও পুরোনো সব নাম একই বিভাগে দেখাবে।
   if (
     [
       "রশিদ বাবদ",
-      "রশিদ বাবদ কালেকশন"
+      "রশিদ",
+      "রশিদ বাবদ কালেকশন",
+      "রশিদ সংগ্রহ"
     ].includes(category)
   ) {
     return "রশিদ বাবদ কালেকশন";
   }
 
-  // গ্রাম কালেকশন
+  // গ্রাম কালেকশন: পুরোনো নামও সমর্থিত।
   if (
     [
       "গ্রাম কালেকশন",
-      "বাজার/মাঠ/গ্রাম কালেকশন"
+      "বাজার/মাঠ/গ্রাম কালেকশন",
+      "বাজার / মাঠ / গ্রাম কালেকশন",
+      "গ্রাম",
+      "বাজার কালেকশন",
+      "মাঠ কালেকশন"
     ].includes(category)
   ) {
     return "গ্রাম কালেকশন";
   }
 
-  // বাকি সব আয়
+  // অন্য সব আয় এবং বিভাগ-ছাড়া পুরোনো আয় এখানে দেখাবে।
   return "অন্যান্য কালেকশন";
 }
 
@@ -586,24 +610,23 @@ if ($("expenseLedgerTotal")) {
     $("expenseLedgerTotal").textContent =
       `মোট ব্যয়: ${money(expense)}`;
   }
+
+  // Firebase থেকে প্রতিবার নতুন হিসাব এলে বিস্তারিত তালিকাও রিফ্রেশ হবে।
+  renderIncomeDetails(
+    "receiptIncomeDetails",
+    "রশিদ বাবদ কালেকশন"
+  );
+
+  renderIncomeDetails(
+    "villageIncomeDetails",
+    "গ্রাম কালেকশন"
+  );
+
+  renderIncomeDetails(
+    "otherIncomeDetails",
+    "অন্যান্য কালেকশন"
+  );
 }
-
-// তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
-// তিনটি আয়ের বিভাগের বিস্তারিত আপডেট
-renderIncomeDetails(
-  "receiptIncomeDetails",
-  "রশিদ বাবদ কালেকশন"
-);
-
-renderIncomeDetails(
-  "villageIncomeDetails",
-  "গ্রাম কালেকশন"
-);
-
-renderIncomeDetails(
-  "otherIncomeDetails",
-  "অন্যান্য কালেকশন"
-);
 
 // ========================================
 // 12. SEARCH AND FILTER
