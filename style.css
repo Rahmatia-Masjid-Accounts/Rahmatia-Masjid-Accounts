@@ -4,18 +4,16 @@
    ========================================= */
 
 :root {
-  /* Royal Navy & Emerald — Light theme */
-  color-scheme: light;
   --navy: #102b55;
-  --navy-dark: #081f3d;
-  --blue: #087f5b;
+  --navy-dark: #091b38;
+  --blue: #2459a9;
   --red: #d83b48;
-  --green: #087f5b;
-  --bg: #f3f8f6;
+  --green: #13855b;
+  --bg: #f4f7fc;
   --surface: #ffffff;
-  --text: #192b28;
-  --muted: #687c76;
-  --border: #dce9e3;
+  --text: #19263b;
+  --muted: #718096;
+  --border: #e4eaf3;
   --radius: 18px;
   --shadow: 0 10px 35px rgba(16, 43, 85, 0.07);
 }
