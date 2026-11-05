@@ -257,6 +257,9 @@ function updateAdminUI() {
   setHidden($("incomeActionHeader"), !isAdmin);
   setHidden($("expenseActionHeader"), !isAdmin);
 
+  // Auth state changes must rebuild the summary detail rows so
+  // each existing transaction gets its admin-only delete button.
+  renderTotals();
   renderTransactions();
 }
 
